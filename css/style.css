@@ -1,0 +1,473 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
+
+body,
+.popover {
+    font-family: 'Figtree', 'Arial', sans-serif;
+    font-size: 14px;
+    font-optical-sizing: auto;
+}
+
+.bg-light-gray {
+    background-color: rgb(233, 228, 228) !important;
+}
+
+.hero_section {
+    background-image: url("./../img/main.webp");
+    min-width: 100%;
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.rounded-xl {
+    border-radius: 20px !important;
+}
+
+.gap-1 {
+    gap: 4px !important;
+}
+
+.gap-2 {
+    gap: 8px !important;
+}
+
+.py-2-5 {
+    padding: 13px 0px !important;
+}
+
+.text-lg {
+    font-size: 22px !important;
+    font-weight: 600 !important;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.hover-yellow-box:hover {
+    background-color: #ffc107 !important;
+}
+
+.round_trip {
+    font-size: 18px;
+    font-weight: 500;
+    padding: 20px 15px;
+}
+
+/* .round_trip input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    border: 2px solid red;
+} */
+input[type="radio"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ffc107;
+    border-radius: 50%;
+    outline: none;
+    background-color: white;
+    cursor: pointer;
+    /* margin-top: -8px; */
+}
+
+input[type="radio"]:checked {
+    background-color: black;
+
+}
+
+.pickupLocationIcon {
+    transform: rotate(40deg);
+}
+
+#pickupCity,
+#goingTo {
+    width: 100%;
+    height: 40px;
+    font-size: 18px;
+}
+
+#pickupCity::placeholder,
+#goingTo::placeholder,
+#phone::placeholder {
+    font-size: 18px;
+    color: rgb(48, 47, 47);
+}
+
+.destination {
+    font-size: 18px;
+    font-weight: 500;
+    padding: 10px 15px;
+
+}
+
+.destination input[type="text"] {
+    border: none;
+    outline: none;
+}
+
+.destination input[type="text"]:focus {
+    border: none;
+    outline: none;
+}
+
+.addMoreCityBtn {}
+
+.adddestination {
+    padding: 18px 15px;
+}
+
+.phonenuber {
+    padding: 8px 0px;
+
+}
+
+.adddestination select:focus-visible {
+    /* border: 0 !important;
+    outline: 0 !important; */
+}
+
+#phone {
+    width: 300px;
+    height: 40px;
+    border: none;
+    outline: none;
+}
+
+.hero_submit_button {
+    width: 100%;
+    padding: 12px;
+    font-weight: 500;
+    font-size: 22px;
+    border: none;
+    outline: none;
+    border-radius: 20px;
+}
+
+.bookingType {
+    background-color: rgb(233, 228, 228);
+}
+
+.bookingType.active {
+    background-color: #ffc107;
+}
+
+.your_itinerary,
+.result_your_itinerary {
+    display: flex;
+    align-items: center;
+    justify-content: start !important;
+    text-align: start;
+    column-gap: 5px;
+    row-gap: 10px;
+    flex-wrap: wrap;
+}
+
+.your_itinerary li,
+.result_your_itinerary li {
+    background-color: #ffc107 !important;
+    color: black;
+    font-weight: 500;
+    list-style: none;
+    padding: 6px 15px;
+    border-radius: 20px;
+    cursor: pointer !important;
+    transition: 200ms ease-in-out;
+}
+
+.your_itinerary li:hover,
+.result_your_itinerary li:hover {
+    background-color: black !important;
+    color: white;
+    transition: 200ms ease-in-out;
+}
+
+.your_itinerary li::after {
+    content: "x";
+    font-weight: 700;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.itinerary_arrow {
+    font-weight: 900;
+}
+
+.enabledAddBtn:hover {
+    background-color: #000 !important;
+    color: #fff !important;
+
+}
+
+.no-drop-pointer {
+    cursor: no-drop !important;
+}
+
+.itinerary_arrow:last-child {
+    display: none !important;
+}
+
+.suggestions-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    z-index: 1000;
+}
+
+.suggestions-list li {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.suggestions-list li:hover {
+    background-color: #f0f0f0;
+}
+
+#pickupSuggestions,
+#destinationSuggestions {
+    min-height: 200px;
+}
+
+#departureAt , #localPickupAt{
+    max-width: 95%;
+    border: none;
+    outline: none;
+}
+
+#arrivalAt , #localArrivalAt {
+    max-width: 60%;
+    border: none;
+    outline: none;
+}
+
+.date-close {
+    font-size: 18px !important;
+    color: red;
+}
+
+/* input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+    width: 15px;
+    padding: 0px;
+    margin: 0px;
+    margin-top: 10px;
+} */
+
+.result_your_itinerary li {
+    font-size: 13px;
+    padding: 2px 10px;
+}
+
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: red;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 50%;
+}
+
+.price-old {
+    text-decoration: line-through;
+    color: #888;
+    margin: 0;
+}
+
+.price-new {
+    color: green;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.book-btn {
+    background: orange;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 30px;
+}
+
+.book-btn:hover {
+    background: darkorange;
+}
+
+.edit {
+    font-size: 16px;
+}
+
+.car_img {
+    max-width: 200px;
+    width: 200px;
+    height: 150px;
+    margin-left: -10px;
+}
+
+.toll_and_without_toll {
+    font-weight: 600;
+
+}
+
+.toll_and_without_toll:first-child {
+    /* background-color: #ffc107; */
+
+}
+
+.inlcuded_list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.inlcuded_list li {
+    min-width: 180px;
+    text-align: start;
+}
+
+.toll_and_without_toll div:nth-child().active {
+    background-color: #ffc107 !important;
+}
+
+.inlcuded_list li span {
+    font-size: 14px;
+    color: #1f1e1e;
+    display: inline-block;
+
+}
+
+.inlcuded_list li span:nth-child(2) {
+    color: #01c501;
+
+}
+
+.price_section {
+    text-align: end;
+    padding: 0px 8px 0px 0px;
+}
+
+.price_section h3 {
+    font-size: 20px;
+}
+
+.selectBtn {
+    background-image: linear-gradient(-60deg, #ff5858 0%, #f09819 100%) !important;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 6px 15px;
+    margin-top: 5px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-self: end;
+    border: 0.8px solid #ff5858;
+
+}
+
+.selectBtn:hover {
+    background-image: linear-gradient(-60deg, #f09819 0%, #ff5858 100%) !important;
+
+}
+
+@keyframes placeHolderShimmer {
+    0% {
+        background-position: -468px 0
+    }
+
+    100% {
+        background-position: 468px 0
+    }
+}
+
+.animated-background {
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderShimmer;
+    animation-timing-function: linear;
+    background: #f6f7f8;
+    background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+    background-size: 800px 104px;
+    height: 12px;
+    position: relative;
+}
+
+.loader {
+    width: 28px;
+    height: 28px;
+    border: 3px solid #FFF;
+    border-bottom-color: #FF3D00;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.custom-select {
+    background-color: white;
+    min-width: 80px;
+}
+
+.custom-select-sm {
+    height: calc(1.8125rem + 2px);
+    padding-top: .375rem;
+    padding-bottom: .375rem;
+    font-size: 75%;
+}
+
+.imgSection {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.imgSection img {
+    object-fit: contain;
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.localCity {
+    font-size: 18px;
+    font-weight: 500;
+    padding: 8px 10px;
+}
+
+.selectPackage {
+    font-size: 18px;
+    font-weight: 500;
+    padding: 8px 10px;
+}
+
+#selectAirport option {
+width: 450px !important;
+}
+#selectAirport:focus option{
+        max-width: 150px;
+    }

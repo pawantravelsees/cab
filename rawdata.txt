@@ -1,0 +1,39 @@
+<?php
+include './helper/db.php';
+$key = '892aafbf-e283-4df0-a738-7a1f3daf798f';
+$url = "https://api.stage.cabbazar.com/partner/api/";
+$get_pra = "airport";
+
+$url_endpoint = $url . $get_pra . "?key=" . $key;
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url_endpoint);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$data = curl_exec($ch);
+curl_close($ch);
+$data = json_decode($data, true);
+
+// // header('Content-Type : applicaton/json');
+// // echo json_encode($data);
+// echo "<pre>";
+// echo sizeof($data);
+// print_r($data);
+// echo "</pre>";
+$db = new db();
+$inserted = 0;
+$skipped = 0;
+
+foreach ($data as $city) {
+    $cityAddress = $city['airportName'] ?? null;
+    $cityPlaceId = $city['airportId'] ?? null;
+
+    if ($cityAddress && $cityPlaceId) {
+        $db->insert_cities($cityAddress, $cityPlaceId);
+        $inserted++;
+    } else {
+        echo "⚠️ Skipping invalid city record.<br>";
+        $skipped++;
+    }
+}
+
+echo "<br>Total inserted: $inserted<br>";
+echo "Total skipped: $skipped<br>";
