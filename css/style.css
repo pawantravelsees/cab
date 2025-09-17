@@ -236,13 +236,15 @@ input[type="radio"]:checked {
     min-height: 200px;
 }
 
-#departureAt , #localPickupAt{
+#departureAt,
+#localPickupAt {
     max-width: 95%;
     border: none;
     outline: none;
 }
 
-#arrivalAt , #localArrivalAt {
+#arrivalAt,
+#localArrivalAt {
     max-width: 60%;
     border: none;
     outline: none;
@@ -466,8 +468,16 @@ select {
 }
 
 #selectAirport option {
-width: 450px !important;
+    width: 450px !important;
 }
-#selectAirport:focus option{
-        max-width: 150px;
-    }
+
+#selectAirport:focus option {
+    max-width: 150px;
+}
+
+.filterAppliedBtn::after {
+    content: "x";
+    font-weight: 700;
+    margin-left: 5px;
+    cursor: pointer;
+}

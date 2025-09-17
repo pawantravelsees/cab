@@ -81,7 +81,6 @@ class cabbazar
         require_once 'helper/db.php';
         $db = new db();
         $searchRequest = $db->get_search_request($sid);
-        return $searchRequest;
         $jsonRequest = $this->make_search_request($searchRequest);
         $response = $this->CALL_API($endpoint, $method, $jsonRequest);
         return $response;

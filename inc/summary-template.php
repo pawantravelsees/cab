@@ -2,8 +2,49 @@
 $sid = $_REQUEST['sid'];
 require '../helper/db.php';
 $db = new db();
-$results = $db->get_results($sid);
+// if (isset($_REQUEST['action']) == 'filter_call') {
 
+$carType = (isset($_REQUEST['carType'])) ? $_REQUEST['carType'] : [];
+$range = (isset($_REQUEST['my_range'])) ? array_unique(explode(';', $_REQUEST['my_range'])) : "";
+$seat_type = (isset($_REQUEST['seat_type'])) ? $_REQUEST['seat_type'] : [];
+$short_by = (isset($_REQUEST['short_by'])) ? $_REQUEST['short_by'] : "";
+$my_array = [
+    'car_type' => $carType,
+    'price_range' => $range,
+    'seat_type' => $seat_type,
+    'short_by' => $short_by
+];
+$priceRange = $db->get_price_range($sid);
+$dbMin = (isset($priceRange['price_min']) ? $priceRange['price_min'] : "");
+$dbMax = (isset($priceRange['price_max']) ? $priceRange['price_max'] : "");
+
+$added_filt = "";
+
+foreach ($my_array as $k => $filter) {
+    if (empty($filter)) continue;
+    if ($k == "car_type") {
+        $added_filt .= "<button type='button' class='btn btn-outline-danger btn-sm mx-1 filterAppliedBtn'  id='carType' data-name=" . $k . ">" . ucwords(str_replace('_', ' ', 'car_type')) . "</button>";
+    }
+    if ($k == "seat_type") {
+        $added_filt .= "<button type='button' class='btn btn-outline-danger btn-sm mx-1 filterAppliedBtn' id='seatCapacity' data-name=" . $k . ">" . ucwords(str_replace('_', ' ', 'seat_type')) . "</button>";
+    }
+    if ($k == "price_range") {
+        if ((isset($range[0]) && $range[0] != $dbMin) || (isset($range[1]) && $range[1] != $dbMax)) {
+            $added_filt .= "<button type='button' class='btn btn-outline-danger btn-sm mx-1 filterAppliedBtn' id='priceRange' data-name=" . $k . ">" . ucwords(str_replace('_', ' ', 'price_range')) . "</button>";
+        }
+    }
+    if ($k == "short_by") {
+        $added_filt .= "<button type='button' class='btn btn-outline-danger btn-sm mx-1 filterAppliedBtn' id='sortReset' data-name=" . $k . ">" . ucwords(str_replace('_', ' ', 'short_by')) . "</button>";
+    }
+}
+$added_filt = "<div class='alert alert-primary " . (($added_filt == "") ? 'd-none ' : 'px-1 py-2') . "'>" . $added_filt;
+$added_filt .= "</div>";
+echo $added_filt;
+// echo "<pre>";
+// print_r($_REQUEST);
+// echo "</pre>";
+// die;
+$results = $db->get_results($sid, $carType, $range, $seat_type, $short_by);
 foreach ($results['apiResponse'] as $item) {
 ?>
     <div class="col-md-12 mb-3 h-auto w-auto p-2 d-flex border border-gray rounded items">
@@ -52,7 +93,7 @@ foreach ($results['apiResponse'] as $item) {
                                                         } else if ($item['inc_distance'] == "12_120") {
                                                             $localCabKM = "12 Hours , 120Km";
                                                         } else {
-                                                            $localCabKM = $item['inc_distance']." KM";
+                                                            $localCabKM = $item['inc_distance'] . " KM";
                                                         }
                                                     }
                                                     echo $localCabKM;

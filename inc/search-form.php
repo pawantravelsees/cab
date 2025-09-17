@@ -199,8 +199,8 @@
                     <div class="d-flex align-items-center justify-content-start gap-2 text-start rounded-xl font-weight-normal cursor-pointer bg-light-gray localCity">
                         <select name="airportRoute" id="selectRoute" class="form-control bg-light-gray border-0 shadow-none outline-none">
                             <option value="" disabled <?= !isset($request['details'][0]['fareType']) ? 'selected' : '' ?>>From Airport / To Airport</option>
-                            <option value="from-airport" <?= (isset($request['details'][0]['fareType']) && $request['details'][0]['fareType'] == 'from-airport') ? 'selected' : '' ?>>From Airport</option>
                             <option value="to-airport" <?= (isset($request['details'][0]['fareType']) && $request['details'][0]['fareType'] == 'to-airport') ? 'selected' : '' ?>>To Airport</option>
+                            <option value="from-airport" <?= (isset($request['details'][0]['fareType']) && $request['details'][0]['fareType'] == 'from-airport') ? 'selected' : '' ?>>From Airport</option>
                         </select>
                         <span class="material-symbols-outlined">
                             arrow_drop_down
@@ -212,7 +212,8 @@
             <div class="row mb-2 selecepackageRow">
                 <div class="col-md-12 px-1">
                     <div class="d-flex align-items-center justify-content-start gap-2 text-start rounded-xl font-weight-normal cursor-pointer bg-light-gray selectPackage">
-                        <select name="airport" id="selectAirport" class="form-control bg-light-gray border-0 shadow-none outline-none overflow-scroll">
+                        <select name="airport" id="selectAirport" <?= isset($request['details'][0]) ? "onchange='getLocalCitiesAgainstAirport()'" : "" ?>
+                            class="form-control bg-light-gray border-0 shadow-none outline-none overflow-scroll">
                             <option value="" disabled selected>Select Airport</option>
                         </select>
                         <span class="material-symbols-outlined">
@@ -222,12 +223,12 @@
                 </div>
             </div>
 
-            <div class="row mb-2 destinationCityRow ">
+            <div class="row mb-2 destinationCityRow <?=(isset($request['details'][0]['destinationCity']))?'d-block':'d-none'?>">
                 <div class="col-md-12 px-1">
                     <div class="d-flex align-items-center justify-content-start gap-2 text-start rounded-xl font-weight-normal cursor-pointer bg-light-gray selectPackage">
                         <select name="airportdestinationCity" id="selectDestinationcity" class="form-control bg-light-gray border-0 shadow-none outline-none overflow-scroll showLocalCities">
                             <option value="" disabled selected>Select Destination City</option>
-                            
+
                         </select>
                         <span class="material-symbols-outlined">
                             location_on

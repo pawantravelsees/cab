@@ -1,7 +1,6 @@
 <?php
 if (!isset($_GET['sid'])) {
     header("Location: index.php");
-    exit;
 }
 require './inc/head.php';
 require './inc/header.php';
@@ -10,10 +9,10 @@ $db = new db();
 
 $sid = $_GET['sid'];
 $request = $db->get_search_request($sid);
-
-echo "<pre>";
-print_r($request);
-echo "</pre>";
+// echo "<pre>";
+// print_r($request);
+// echo "</pre>";
+$scp = $request['details'][0]['scp'];
 if (isset($request['details'][0]['cityId'])) {
     $selectedCity = $db->get_local_city_details($request['details'][0]['cityId']);
 }
@@ -37,13 +36,15 @@ include "./inc/edit_modal.php";
                 <img src="./img/Anniversary-33.jpg" alt="" class="border px-4 mb-3 img-fluid rounded d-none d-md-block">
             </div>
             <div class="mb-3 col-md-2 mx-0 p-0">
-                <select id="sortOptions" class="custom-select custom-select-sm shadow-none">
-                    <option value="recommended" selected>Recommended</option>
-                    <option value="low_high">Price (Low to High)</option>
-                    <option value="high_low">Price (High to Low)</option>
-                    <option value="duration">Duration (Less to More)</option>
-                    <option value="gst">With Tax</option>
-                </select>
+                <form id="recommendation">
+                    <select id="sortOptions" name="short_by" class="custom-select custom-select-sm shadow-none">
+                        <option value="" selected>Recommended</option>
+                        <option value="low_high">Price (Low to High)</option>
+                        <option value="high_low">Price (High to Low)</option>
+                        <option value="duration">Duration (Less to More)</option>
+                        <option value="gst">With GST</option>
+                    </select>
+                </form>
             </div>
         </div>
         <div id="result" class="col-md-12">
@@ -155,6 +156,7 @@ require './inc/footer.php';
     </div>
     </div>`
         )
+        let intervalTime = (parseInt("<?=$scp?>")==2) ? 100 : 4000;
         let intervalId = setInterval(function() {
             $.post("api.php", {
                 action: "get_scp",
@@ -176,7 +178,7 @@ require './inc/footer.php';
                     })
                 } else {}
             })
-        }, 2000)
+        }, intervalTime)
     })
     $(document).ready(function() {
         $(".modifyBtn").on("click", function(e) {
@@ -185,6 +187,7 @@ require './inc/footer.php';
             if (tripType == "o") {
                 $("#cabBookingModal").modal("show");
                 $('#pickupCity').attr('required', true)
+                $('#selectDestinationcity').removeAttr('required')
             } else if (tripType == "l") {
                 $("#searchCar").removeClass('d-block')
                 $("#searchCar").addClass('d-none')
@@ -195,7 +198,11 @@ require './inc/footer.php';
                 $("#airport").addClass('d-none')
                 $('#airportTransfer').addClass('fade')
                 $("#cabBookingModal").modal("show");
+                $('#selectDestinationcity').removeAttr('required')
             } else {
+                getLocalCitiesAgainstAirport()
+                $('#pickupCity').removeAttr('required')
+                $('#selectDestinationcity').attr('required', true)
                 $("#searchCar").removeClass('d-block')
                 $("#searchCar").addClass('d-none')
                 $("#localTrip").addClass('d-block')
@@ -261,10 +268,32 @@ require './inc/footer.php';
             defaultDate: "<?= (isset($request['details'][0]['departureAt'])) ? date('d-M-Y H:i', strtotime($request['details'][0]['departureAt'] ?? 'now')) : '' ?>"
         });
     })
-    
+
+    function getLocalCitiesAgainstAirport() {
+        let airportRoute = $('#selectRoute').val()
+        $.get('api.php', {
+            action: "get_local_airport_cities",
+            airportId: $('#selectAirport').val(),
+            fareType: airportRoute
+        }, (data) => {
+            $('.showLocalCities').empty();
+            $('.showLocalCities').append(`<option selected disabled value=""></option>`)
+            if (airportRoute === "from-airport") {
+                $('#selectDestinationcity option:first').text('Select destination city');
+            } else if (airportRoute === "to-airport") {
+                $('#selectDestinationcity option:first').text('Select pickup city');
+            }
+            let selectedCity = "<?= isset($request['details'][0]['destinationCity']) ? $request['details'][0]['destinationCity'] : '' ?>";
+            data.forEach(city => {
+                let isSelected = (city == selectedCity) ? "selected" : "";
+                $('#selectDestinationcity').append(
+                    `<option value="${city}" ${isSelected}>${city}</option>`
+                );
+            });
+
+        })
+    }
 </script>
-
-
 
 <?php
 require './inc/foot.php';

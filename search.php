@@ -15,10 +15,6 @@ $destinationAddress;
 $destinationLocationPlaceId;
 $moreCities = [];
 $searchRequest = [];
-// echo "<pre>";
-// print_r($_REQUEST);
-// var_dump($_REQUEST);
-// echo "</pre>";
 
 if (isset($_REQUEST['action']) && $_REQUEST['action'] === "outstation") {
     $isReturn = ($_REQUEST['roundTrip'] == "true") ? 1 : 0;
@@ -64,7 +60,6 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] === "outstation") {
     $endpoint = "/fare";
     $sid = $db->insert_search_request($searchRequest);
     $results = $cb->search($sid, $endpoint);
-
     $db->update_scp($sid, 3);
     $results = process_CBZ_cabs($results, $sid);
 
@@ -107,16 +102,14 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] === "airport") {
 
     if ($_REQUEST['airportRoute'] == "from-airport") {
         $searchRequest["destination"] = $_REQUEST['airportdestinationCity'];
+        $searchRequest['destination_id'] = $_REQUEST['airport'];
     } else {
         $searchRequest["pickup"] = $_REQUEST['airportdestinationCity'];
+        $searchRequest['pickup_id'] = $_REQUEST['airport'];
     }
 
     $sid = $db->insert_search_request($searchRequest);
     $results = $cb->search($sid, $endpoint);
-    echo "<pre>";
-    print_r($results);
-    // print_r($searchRequest);
-    echo "</pre>";
     $db->update_scp($sid, 3);
     $results = process_CBZ_cabs($results, $sid);
     $filter = cab_filters($results);
@@ -124,8 +117,4 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] === "airport") {
     $db->insert_booking_details($results);
     $db->update_scp($sid, 2);
     header("Location: results.php?sid=" . $sid);
-    // echo "<pre>";
-    // print_r($results);
-    // // print_r($searchRequest);
-    // echo "</pre>";
 }

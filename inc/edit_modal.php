@@ -49,7 +49,7 @@ function formate_search_request($results)
 }
 $results = formate_search_request($request);
 // echo "<pre>";
-// print_r($results);
+// print_r($request);
 // print_r($selectedCity);
 // echo "</pre>";
 // die;
@@ -60,7 +60,7 @@ $results = formate_search_request($request);
             <div class="col">
                 <div class="d-flex align-items-center text-white">
                     <?php
-                    //if ($results['trip_info']['trip_type'] == "o") { ?>
+                    if ($results['trip_info']['trip_type'] == "o") { ?>
                         <span class="material-symbols-outlined mr-1" style="font-variation-settings: 'FILL' 1; font-size: 20px;">location_on</span>
                         <span class="mr-2 font-weight-bold"><?php echo $results['cities'][0]['address'] ?>,</span>
                         <!-- <span class="material-symbols-outlined mx-1" style="font-variation-settings: 'FILL' 1; font-size: 20px;">date_range</span> -->
@@ -78,7 +78,41 @@ $results = formate_search_request($request);
                         <span class="material-symbols-outlined mr-1" style="font-variation-settings: 'FILL' 1; font-size: 20px;">directions_car</span>
                         <span class="mr-3"><?= $results['trip_info']['trip_way'] ?></span>
                     <?php
-                    //}elseif($results['trip_info']['trip_type'] == "o")
+                    } elseif ($results['trip_info']['trip_type'] == "a") {
+                        function extractDetails($string)
+                        {
+                            $parts = explode(' ', trim($string));
+                            $firstWord = $parts[0] ?? '';
+                            preg_match('/\((.*?)\)/', $string, $matches);
+                            $firstBracket = $matches[1] ?? '';
+                            $segments = explode('-', $string);
+                            $lastPart = trim(end($segments)) . " Airport";
+
+                            return [
+                                'city'   => $firstWord,
+                                'terminal' => $firstBracket,
+                                'lastPart'    => $lastPart
+                            ];
+                        }
+
+                        $text = $selectedCity['airport_name'];
+                        $result = extractDetails($text);
+                        // echo "<pre>";
+                        // print_r($result);
+                        // echo "</pre>";
+                        $pickupAirport = $result['city'] . ", (" . $result['terminal'] . ") " . $result['lastPart'];
+                        $pickupAt = "";
+                        ($request['details'][0]['fareType'] == "from-airport") ? $pickupAt = "From" : $pickupAt = "To";
+                    ?>
+                        <p class="m-0 p-0 mr-2"><strong><?= $pickupAt ?></strong>
+                            <span class="mr-2 font-weight-bold"><?php echo "- " . $pickupAirport ?></span>
+                        </p>
+                        <p class="m-0 p-0 mr-2"><strong><?= "Pickup At -" ?></strong>
+                            <span class="font-weight-bold mr-2"><?= date('D d, M h:i', strtotime($request['details'][0]['departureAt'])) ?> </span>
+                        </p>
+
+                    <?php
+                    }
                     ?>
                     <div class="ml-auto">
                         <button class="btn text-white bgshade-2 btn-lg px-3 py-2 edit round mr-0 text-center modifyBtn" style="border: 0; font-size: 16px;" data-toggle="modal" data-tripType="<?php echo $results['trip_info']['trip_type'] ?>"><span class="material-symbols-outlined edit">

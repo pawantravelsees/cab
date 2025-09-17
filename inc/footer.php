@@ -5,5 +5,9 @@
 <script src="./js/flatpickr.js"></script>
 <script src="./js/ion.rangeSlider.js"></script>
 <script src="./js/ion.rangeSlider.min.js"></script>
-<!-- <script src="./js/script.js"></script> -->
+<!-- <script src="./js/filter.js"></script> -->
  <?php require_once($_SERVER['DOCUMENT_ROOT']."/cab/js/script.php"); ?>
+
+ <?php 
+ if($pagename == 'results.php') require_once($_SERVER['DOCUMENT_ROOT']."/cab/js/filter.php");
+ ?>

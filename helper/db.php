@@ -24,7 +24,7 @@ class db
     function get_search_request($sid)
     {
         $result = $this->db->where("id", $sid)->get("search_request");
-       
+
         if (!empty($result)) {
             if ($result[0]['trip_type'] == "o") {
                 $detailsWithPlaceId = $this->get_place_id($result);
@@ -53,15 +53,16 @@ class db
     function get_airport_details($results)
     {
         $airportPickUpId = $results[0]['pickup_id'];
-        
+
         // echo "Pickup ID: ".$airportPickUpId."<br>";
-        $airport = $this->db->where('id', $airportPickUpId)->getOne('airports' , 'airport_id');
+        $airport = $this->db->where('id', $airportPickUpId)->getOne('airports', 'airport_id');
         $jsonRequest = [
             "trip_type" => $results[0]['trip_type'],
             "departureAt" => date('d-m-Y H:i', strtotime($results[0]['departure_date'])),
             "airportId" => $airport['airport_id'],
-            "destinationCity" => $results[0]['destination'],
+            "destinationCity" => (isset($results[0]['destination']) ? $results[0]['destination'] : $results[0]['pickup']),
             "fareType" => ($results[0]['airport_from_to'] == 2) ? "from-airport" : "to-airport",
+            "scp" => (isset($results[0]['scp']) ? $results[0]['scp'] : '')
         ];
         return $jsonRequest;
     }
@@ -73,7 +74,8 @@ class db
             "trip_type" => $pickupCity[0]['trip_type'],
             "cityId" => $cityPlaceId['place_id'],
             "departureAt" => date('d-m-Y H:i', strtotime($pickupCity[0]['departure_date'])),
-            "fareType" => $pickupCity[0]['local_city_package']
+            "fareType" => $pickupCity[0]['local_city_package'],
+            "scp" => (isset($pickupCity[0]['scp']) ? $pickupCity[0]['scp'] : '')
         ];
         return $jsonRequest;
     }
@@ -119,14 +121,90 @@ class db
         }
     }
 
-    function get_results($sid)
+    function get_price_range($sid)
     {
-        $serchResult = $this->db->where('id', $sid)->get('search_request');
-        $apiResponse = $this->db->where('sid', $sid)->get('car_results');
+        $priceRow = $this->db->where('sid', $sid)->getOne('cab_filters', ['price_min', 'price_max']);
+        return $priceRow;
+    }
+    function get_results($sid, $carType = [], $range = [], $seat_type = [], $short_by = "")
+    {
+        $apiResponse = $this->db->where('sid', $sid);
+        $min = $range[0] ?? "";
+        $max = $range[1] ?? "";
+
+        if (!empty($min) && !empty($max)) {
+            $this->db->where('price', [$min, $max], 'BETWEEN');
+        }
+        if (!empty($carType)) {
+            $this->db->where('car_type', $carType, 'IN');
+        }
+        if (!empty($short_by)) {
+            if ($short_by == "low_high") {
+                $this->db->orderBy("price", "ASC");
+            } elseif ($short_by == "high_low") {
+                $this->db->orderBy("price", "DESC");
+            }
+        }
+        if (!empty($seat_type)) {
+            $this->db->where('car_capacity', $seat_type, 'IN');
+        }
+        $apiResponse = $this->db->get('car_results');
+
+        $searchResult = $this->db->where('id', $sid)->get('search_request');
+        return [
+            'searchResult' => $searchResult,
+            'apiResponse' => $apiResponse
+        ];
+    }
+
+
+    function get_results_by_filter($sid, $filter_array)
+    {
+        // echo "<pre>";
+        // print_r(func_get_args());
+        // echo "</pre>";
+        // Extract filters
+        $car_type  = (!empty($filter_array['car_type'])) ? $filter_array['car_type'] : [];
+        $seat_type = (!empty($filter_array['seat_type'])) ? $filter_array['seat_type'] : [];
+        $recommendation = (!empty($filter_array['recommendation'])) ? $filter_array['recommendation'] : "";
+
+        $priceRow = $this->db->where('sid', $sid)->getOne('cab_filters', ['price_min', 'price_max']);
+        $dbMin = ceil($priceRow['price_min']) ?? 0;
+        $dbMax = ceil($priceRow['price_max']) ?? 0;
+
+        // return ceil($priceRow['price_min']);
+
+        $min = ceil($filter_array['price_range'][0]) ?? $dbMin;
+        $max = ceil($filter_array['price_range'][1]) ?? $dbMax;
+
+        if ($min < $dbMin || $max > $dbMax) {
+            $filter_array['price_range'] = [];
+            $min = $dbMin;
+            $max = $dbMax;
+        }
+        $searchResult = $this->db->where('id', $sid)->get('search_request');
+        $this->db->where('sid', $sid);
+        if (!empty($min) && !empty($max) && ($min != $dbMin || $max != $dbMax)) {
+            $this->db->where('price', [$min, $max], 'BETWEEN');
+        }
+        if (!empty($car_type)) {
+            $this->db->where('car_type', $car_type, 'IN');
+        }
+        if (!empty($recommendation)) {
+            if ($recommendation == "low_high") {
+                $this->db->orderBy("price", "ASC");
+            } elseif ($recommendation == "high_low") {
+                $this->db->orderBy("price", "DESC");
+            }
+        }
+        if (!empty($seat_type)) {
+            $this->db->where('car_capacity', $seat_type, 'IN');
+        }
+        $result = $this->db->get('car_results');
 
         return [
-            'searchResult' => $serchResult,
-            'apiResponse' => $apiResponse
+            'searchResult' => $searchResult,
+            'apiResponse'  => $result
         ];
     }
 
@@ -143,6 +221,7 @@ class db
             $carTypes = implode(',', $filter_array['car_types']);
             $array = [
                 "car_types" => $carTypes,
+                "total_result" => count($filter_array),
                 "price_min" => $filter_array['price_min'],
                 "price_max" => $filter_array['price_max'],
                 "sid" => $sid
@@ -200,12 +279,14 @@ class db
     }
 
 
-    function get_local_city_details($cityId){
-        $city = $this->db->where('place_id' , $cityId)->get('local_cities');
+    function get_local_city_details($cityId)
+    {
+        $city = $this->db->where('place_id', $cityId)->get('local_cities');
         return $city[0];
     }
-    function get_local_airport_details($airport_d){
-        $airport = $this->db->where('airport_id' , $airport_d)->get('airports');
+    function get_local_airport_details($airport_d)
+    {
+        $airport = $this->db->where('airport_id', $airport_d)->get('airports');
         return $airport[0];
     }
 }

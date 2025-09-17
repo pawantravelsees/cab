@@ -11,7 +11,6 @@ function cab_filters($results)
             $prices[] = $row['price'];
         }
     }
-
     if (!empty($prices)) {
         $filter_array['price_min'] = min($prices);
         $filter_array['price_max'] = max($prices);
@@ -21,13 +20,25 @@ function cab_filters($results)
 
 function process_CBZ_cabs($results, $sid)
 {
+
     $common_array = [];
     foreach ($results['fareChart'] as $data) {
+        if ($data['carType'] == 'hatchback' || $data['carType'] == 'sedan') {
+            $carCapacity = 4;
+        } elseif ($data['carType'] == 'suv') {
+            $carCapacity = 5;
+        } elseif ($data['carType'] == 'innova (7+1)' || $data['carType'] == 'innova' || $data['carType'] == 'crysta' || $data['carType'] == 'crysta (7+1)' || $data['carType'] == 'suv (7+1)') {
+            $carCapacity = 8;
+        } else {
+            $carCapacity = null; // fallback if type not matched
+        }
+
         $common_array[] = [
             "sid" => $sid,
             "vendor" => "cbz",
             "card_id" => $data['carId'] ?? "",
             "car_type" => $data['carType'] ?? "",
+            "car_capacity" => $carCapacity,
             "inc_distance" => isset($data['includedKm'])
                 ? $data['includedKm']
                 : (isset($results['details']['fareType'])

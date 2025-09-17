@@ -365,32 +365,34 @@
                                 $('#selectDestinationcity option:first').text('Select pickup city');
                             }
 
-                            // console.log($(this).val(), airportRoute);
-                            $.get('api.php', {
-                                action: "get_local_airport_cities",
-                                airportId: $(this).val(),
-                                fareType: airportRoute
-                            }, (data) => {
-                                // console.log(data);
-                                // let cities = JSON.parse(data);
-                                $('.showLocalCities').empty();
-                                $('.showLocalCities').append(`<option selected disabled value=""></option>`)
-                                if (airportRoute === "from-airport") {
-                                    $('#selectDestinationcity option:first').text('Select destination city');
-                                } else if (airportRoute === "to-airport") {
-                                    $('#selectDestinationcity option:first').text('Select pickup city');
-                                }
-                                data.forEach(city => {
-                                    $('.showLocalCities').append(
-                                        `<option value="${city}">${city}</option>`
-                                    );
-                                });
-                            })
+                       
+                                $.get('api.php', {
+                                    action: "get_local_airport_cities",
+                                    airportId: $(this).val(),
+                                    fareType: airportRoute
+                                }, (data) => {
+                                    // console.log(data);
+                                    // return;
+                                    // let cities = JSON.parse(data);
+                                    $('.showLocalCities').empty();
+                                    $('.showLocalCities').append(`<option selected disabled value=""></option>`)
+                                    if (airportRoute === "from-airport") {
+                                        $('#selectDestinationcity option:first').text('Select destination city');
+                                    } else if (airportRoute === "to-airport") {
+                                        $('#selectDestinationcity option:first').text('Select pickup city');
+                                    }
+                                    data.forEach(city => {
+                                        $('.showLocalCities').append(
+                                            `<option value="${city}">${city}</option>`
+                                        );
+                                    });
+                                })
+                     
                             return
 
                         })
 
-                        
+
                         console.log(sp.val());
 
                         if (airportRoute === "from-airport") {
