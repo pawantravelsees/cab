@@ -3,17 +3,22 @@ $sid = $_REQUEST['sid'];
 require '../helper/db.php';
 $db = new db();
 $results = $db->get_filter($sid);
+// echo "<pre>";
+// print_r($results);
+// echo "</pre>";
+// die;
 $carTypes = [];
-foreach ($results as $result) {
-    $carTypes = explode(",", $result['car_types']);
-    $minPrice = $result['price_min'];
-    $maxPrice = $result['price_max'];
-}
+// foreach ($results as $result) {
+    $carTypes = explode(",", $results['car_types']);
+    $minPrice = $results['price_min'];
+    $maxPrice = $results['price_max'];
+// }
+
 ?>
 <div class="card shadow-sm p-3 mb-3 rounded">
     <div class="d-flex align-items-center justify-content-between mb-3">
         <h5 class="">Filters</h5>
-        <a href="">Reset All</a>
+        <!-- <a href="">Reset All</a> -->
     </div>
     <form id="filterForm">
         <div class="mb-3">

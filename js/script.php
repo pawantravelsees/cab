@@ -126,8 +126,12 @@
         const destinationSuggestionBox = $('#destinationSuggestions');
         const locations = $('#locations');
 
-        $(pickupInput).on('input', function() {
-            const query = $(this).val().toLowerCase();
+        $(pickupInput).on('input focus', function() {
+
+            let query = $(this).val().toLowerCase() ;
+            if(query == null || query == ""){
+            query = "del"
+            }
             suggestionBox.empty();
 
             if (query.length === 0) {
@@ -150,8 +154,12 @@
             });
         });
 
-        $(destinationInput).on('input', function() {
-            const query = $(this).val().toLowerCase();
+        $(destinationInput).on('input focus', function() {
+            
+            let query = $(this).val().toLowerCase() ;
+            if(query == null || query == ""){
+            query = "a"
+            }
             destinationSuggestionBox.empty();
 
             if (query.length === 0) {

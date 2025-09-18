@@ -53,8 +53,6 @@ class db
     function get_airport_details($results)
     {
         $airportPickUpId = $results[0]['pickup_id'];
-
-        // echo "Pickup ID: ".$airportPickUpId."<br>";
         $airport = $this->db->where('id', $airportPickUpId)->getOne('airports', 'airport_id');
         $jsonRequest = [
             "trip_type" => $results[0]['trip_type'],
@@ -126,7 +124,7 @@ class db
         $priceRow = $this->db->where('sid', $sid)->getOne('cab_filters', ['price_min', 'price_max']);
         return $priceRow;
     }
-    function get_results($sid, $carType = [], $range = [], $seat_type = [], $short_by = "")
+    function get_results($sid, $carType = [], $range = [], $seat_type = [], $short_by = "" ,   $page = 1)
     {
         $apiResponse = $this->db->where('sid', $sid);
         $min = $range[0] ?? "";
@@ -148,7 +146,10 @@ class db
         if (!empty($seat_type)) {
             $this->db->where('car_capacity', $seat_type, 'IN');
         }
-        $apiResponse = $this->db->get('car_results');
+
+        $limit = 3;
+        $skip = ($page -1) * $limit;
+        $apiResponse = $this->db->get('car_results',[ $skip , $limit]);
 
         $searchResult = $this->db->where('id', $sid)->get('search_request');
         return [
@@ -210,7 +211,7 @@ class db
 
     function get_filter($sid)
     {
-        $filterResult = $this->db->where('sid', $sid)->get("cab_filters");
+        $filterResult = $this->db->where('sid', $sid)->getOne("cab_filters");
         return $filterResult;
     }
 
@@ -221,7 +222,7 @@ class db
             $carTypes = implode(',', $filter_array['car_types']);
             $array = [
                 "car_types" => $carTypes,
-                "total_result" => count($filter_array),
+                "total_result" => $filter_array['total_filter'],
                 "price_min" => $filter_array['price_min'],
                 "price_max" => $filter_array['price_max'],
                 "sid" => $sid

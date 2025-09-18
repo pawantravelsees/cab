@@ -24,7 +24,6 @@ if (isset($request['details']) && $request['details'][0]['trip_type'] == "o") {
 }
 ?>
 <?php
-
 include "./inc/edit_modal.php";
 ?>
 <div class="container d-flex align-items-start gap-3">
@@ -49,6 +48,56 @@ include "./inc/edit_modal.php";
         </div>
         <div id="result" class="col-md-12">
         </div>
+        <?php
+        $filterResults = $db->get_filter($sid);
+        // echo "<pre>";
+        // print_r($filterResults[0]['total_result']);
+        // echo "</pre>";
+        // die;
+        ?>
+        <!-- <div class="d-flex align-content-center justify-content-between">
+            <?php
+            $totalResults = $filterResults[0]['total_result'];
+            // $totalResults = count($results['apiResponse']);
+            $perPage = 3;
+            $totalPages = ceil($totalResults / $perPage);
+            $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            if ($currentPage < 1) $currentPage = 1;
+            if ($currentPage > $totalPages) $currentPage = $totalPages;
+            ?>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item <?= ($currentPage == 1) ? 'disabled' : '' ?>">
+                        <a class="page-link" href="result.php?sid=<?= $sid ?>&page=<?= $currentPage - 1 ?>" tabindex="-1">Previous</a>
+                    </li>
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <li class="page-item <?= ($i == $currentPage) ? 'active' : '' ?>">
+                            <a class="page-link" href="result.php?sid=<?= $sid ?>&page=<?= $i ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <li class="page-item <?= ($currentPage == $totalPages) ? 'disabled' : '' ?>">
+                        <a class="page-link" href="result.php?sid=<?= $sid ?>&page=<?= $currentPage + 1 ?>">Next</a>
+                    </li>
+
+                </ul>
+            </nav>
+            <div class="d-flex justify-content-between align-items-start gap-2">
+                <span class="text-muted">
+                    Showing <strong>1</strong> to <strong>10</strong> of <strong>100</strong> entries
+                </span>
+
+                <div>
+                    <label for="DataCount" class="form-label me-2">Show</label>
+                    <select id="DataCount" class="form-select form-select-lg " aria-label=".form-select-lg example">
+                        <option value="10" selected>10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+            </div>
+        </div> -->
     </div>
 
     <div class="modal" id="cabBookingModal" tabindex="-1" aria-labelledby="cabBookingModalLabel" aria-hidden="true">
@@ -156,7 +205,7 @@ require './inc/footer.php';
     </div>
     </div>`
         )
-        let intervalTime = (parseInt("<?=$scp?>")==2) ? 100 : 4000;
+        let intervalTime = (parseInt("<?= $scp ?>") == 2) ? 100 : 4000;
         let intervalId = setInterval(function() {
             $.post("api.php", {
                 action: "get_scp",

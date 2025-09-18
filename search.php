@@ -62,7 +62,6 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] === "outstation") {
     $results = $cb->search($sid, $endpoint);
     $db->update_scp($sid, 3);
     $results = process_CBZ_cabs($results, $sid);
-
     $filter = cab_filters($results);
     $db->insert_cab_filters($filter, $sid);
     $db->insert_booking_details($results);

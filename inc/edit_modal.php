@@ -50,7 +50,7 @@ function formate_search_request($results)
 $results = formate_search_request($request);
 // echo "<pre>";
 // print_r($request);
-// print_r($selectedCity);
+// // print_r($selectedCity);
 // echo "</pre>";
 // die;
 ?>
@@ -97,18 +97,25 @@ $results = formate_search_request($request);
 
                         $text = $selectedCity['airport_name'];
                         $result = extractDetails($text);
+                        $pickupAirport = $result['city'] . ", (" . $result['terminal'] . ") " . $result['lastPart'];
                         // echo "<pre>";
                         // print_r($result);
                         // echo "</pre>";
-                        $pickupAirport = $result['city'] . ", (" . $result['terminal'] . ") " . $result['lastPart'];
-                        $pickupAt = "";
-                        ($request['details'][0]['fareType'] == "from-airport") ? $pickupAt = "From" : $pickupAt = "To";
+                        $location = "";
+                        if ($request['details'][0]['fareType'] == "to-airport") {
+                            $location = $request['details'][0]['destinationCity'] . " - " . $pickupAirport;
+                        } else {
+                            $location = $pickupAirport . " - " . $request['details'][0]['destinationCity'];
+                        }
+
+                        // $pickupAt = "";
+                        // ($request['details'][0]['fareType'] == "from-airport") ? $pickupAt = "From" : $pickupAt = "To";
                     ?>
-                        <p class="m-0 p-0 mr-2"><strong><?= $pickupAt ?></strong>
-                            <span class="mr-2 font-weight-bold"><?php echo "- " . $pickupAirport ?></span>
+                        <p class="m-0 p-0 mr-1">
+                            <span class="mr-0 font-weight-bold"><?php echo $location ?></span>,
                         </p>
-                        <p class="m-0 p-0 mr-2"><strong><?= "Pickup At -" ?></strong>
-                            <span class="font-weight-bold mr-2"><?= date('D d, M h:i', strtotime($request['details'][0]['departureAt'])) ?> </span>
+                        <p class="m-0 p-0 mr-2">
+                            <span class="font-weight-bold mx-2"><?= date('D d, M h:i', strtotime($request['details'][0]['departureAt'])) ?> </span>
                         </p>
 
                     <?php

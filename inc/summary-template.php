@@ -3,7 +3,7 @@ $sid = $_REQUEST['sid'];
 require '../helper/db.php';
 $db = new db();
 // if (isset($_REQUEST['action']) == 'filter_call') {
-
+$resultsummary = $db->get_filter($sid);
 $carType = (isset($_REQUEST['carType'])) ? $_REQUEST['carType'] : [];
 $range = (isset($_REQUEST['my_range'])) ? array_unique(explode(';', $_REQUEST['my_range'])) : "";
 $seat_type = (isset($_REQUEST['seat_type'])) ? $_REQUEST['seat_type'] : [];
@@ -37,14 +37,22 @@ foreach ($my_array as $k => $filter) {
         $added_filt .= "<button type='button' class='btn btn-outline-danger btn-sm mx-1 filterAppliedBtn' id='sortReset' data-name=" . $k . ">" . ucwords(str_replace('_', ' ', 'short_by')) . "</button>";
     }
 }
-$added_filt = "<div class='alert alert-primary " . (($added_filt == "") ? 'd-none ' : 'px-1 py-2') . "'>" . $added_filt;
+$resetBtn = "<button id='resetAllFilter' class='btn btn-outline-danger btn-sm  " . (($added_filt == "") ? 'd-none ' : 'mx-1') . "'>Reset All</button>";
+$added_filt = "<div class='alert alert-primary  justify-content-between align-content-center" . (($added_filt == "") ? ' d-none ' : ' d-flex px-1 py-2') . "'><div>" . $added_filt . "</div>" . $resetBtn;
 $added_filt .= "</div>";
 echo $added_filt;
+$currentPage = isset($_REQUEST['page']) ? (int)$_REQUEST['page'] : 1;
+$results = $db->get_results($sid, $carType, $range, $seat_type, $short_by, $currentPage);
 // echo "<pre>";
-// print_r($_REQUEST);
+// print_r($results);
 // echo "</pre>";
 // die;
-$results = $db->get_results($sid, $carType, $range, $seat_type, $short_by);
+$totalResults = $resultsummary['total_result'];
+// $totalResults = count($results['apiResponse']);
+$limit = 3;
+$pages = ceil($totalResults / $limit);
+if ($currentPage < 1) $currentPage = 1;
+if ($currentPage > $pages) $currentPage = $pages;
 foreach ($results['apiResponse'] as $item) {
 ?>
     <div class="col-md-12 mb-3 h-auto w-auto p-2 d-flex border border-gray rounded items">
@@ -131,3 +139,40 @@ foreach ($results['apiResponse'] as $item) {
 <?php
 }
 ?>
+
+
+
+<div class="d-flex align-content-center justify-content-between">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item <?= ($currentPage == 1) ? 'disabled' : '' ?>">
+                <a class="page-link" page_no="<?= (($currentPage == 1) ? 1 : ($currentPage - 1)) ?>" href="result.php?sid=<?= $sid ?>&page=<?= $currentPage - 1 ?>" tabindex="-1">Previous</a>
+            </li>
+            <?php for ($i = 1; $i <= $pages; $i++): ?>
+                <li class="page-item <?= ($i == $currentPage) ? 'active' : '' ?>">
+                    <a class="page-link" page_no="<?= $i ?>" href="result.php?sid=<?= $sid ?>&page=<?= $i ?>"><?= $i ?></a>
+                </li>
+            <?php endfor; ?>
+
+            <li class="page-item <?= ($currentPage == $pages) ? 'disabled' : '' ?>">
+                <a class="page-link" page_no="<?= (($currentPage == $pages) ? $pages : ($currentPage + 1)) ?>" href="result.php?sid=<?= $sid ?>&page=<?= $currentPage + 1 ?>">Next</a>
+            </li>
+
+        </ul>
+    </nav>
+    <!-- <div class="d-flex justify-content-between align-items-start gap-2">
+        <span class="text-muted">
+            Showing <strong>1</strong> to <strong>10</strong> of <strong>100</strong> entries
+        </span>
+
+        <div>
+            <label for="DataCount" class="form-label me-2">Show</label>
+            <select id="DataCount" class="form-select form-select-lg " aria-label=".form-select-lg example">
+                <option value="10" selected>10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+    </div> -->
+</div>

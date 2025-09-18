@@ -15,12 +15,12 @@ function cab_filters($results)
         $filter_array['price_min'] = min($prices);
         $filter_array['price_max'] = max($prices);
     }
+    $filter_array ['total_filter'] = sizeof($results);
     return $filter_array;
 }
 
 function process_CBZ_cabs($results, $sid)
 {
-
     $common_array = [];
     foreach ($results['fareChart'] as $data) {
         if ($data['carType'] == 'hatchback' || $data['carType'] == 'sedan') {
