@@ -17,9 +17,7 @@ $my_array = [
 $priceRange = $db->get_price_range($sid);
 $dbMin = (isset($priceRange['price_min']) ? $priceRange['price_min'] : "");
 $dbMax = (isset($priceRange['price_max']) ? $priceRange['price_max'] : "");
-
 $added_filt = "";
-
 foreach ($my_array as $k => $filter) {
     if (empty($filter)) continue;
     if ($k == "car_type") {
@@ -44,10 +42,18 @@ echo $added_filt;
 $currentPage = isset($_REQUEST['page']) ? (int)$_REQUEST['page'] : 1;
 $results = $db->get_results($sid, $carType, $range, $seat_type, $short_by, $currentPage);
 // echo "<pre>";
-// print_r($results);
+// print_r($resultsummary);
 // echo "</pre>";
 // die;
-$totalResults = $resultsummary['total_result'];
+if (isset($resultsummary[0]['total_result'])) {
+    $totalResults = $resultsummary[0]['total_result'];
+} else {
+    echo '<div class="alert alert-warning d-flex align-items-center gap-2" role="alert">
+        <span class="material-symbols-outlined">info</span>
+        No results found. Please adjust your search and try again.
+      </div>';
+    die;
+};
 // $totalResults = count($results['apiResponse']);
 $limit = 3;
 $pages = ceil($totalResults / $limit);
@@ -55,16 +61,16 @@ if ($currentPage < 1) $currentPage = 1;
 if ($currentPage > $pages) $currentPage = $pages;
 foreach ($results['apiResponse'] as $item) {
 ?>
-    <div class="col-md-12 mb-3 h-auto w-auto p-2 d-flex border border-gray rounded items">
-        <div class="col-md-3 px-0 mx-0 border-right border-black">
+    <div class="col-md-12 mb-3 w-auto p-2 d-flex  bg-white rounded items flight-summary">
+        <div class="col-md-3 px-0 mx-0 border-right border-black text-center">
             <img src="
                     <?php
                     if ($item['car_type'] == "hatchback") {
-                        echo "./img/hatchback.svg";
+                        echo "./img/hatchback.png";
                     } elseif ($item['car_type'] == "sedan") {
-                        echo "./img/sedan.svg";
+                        echo "./img/sedan.png";
                     } else {
-                        echo "./img/suv.svg";
+                        echo "./img/suv.png";
                     }
                     ?>" class="car_img" alt="">
         </div>
@@ -73,7 +79,7 @@ foreach ($results['apiResponse'] as $item) {
                 <span class="px-2 py-0 bg-warning rounded-pill small"><?= ucfirst($item['car_type']) ?></span>
             </div>
             <div class="row mt-1">
-                <span class="text h5 m-0">
+                <span class="text h5 m-0 font-weight-bold">
                     <?php
                     if ($item['car_type'] == "hatchback") {
                         echo "Swift, WagonR or Similar";
@@ -127,21 +133,43 @@ foreach ($results['apiResponse'] as $item) {
                 </div>
             </div>
         </div>
+        <?php
+        $originalPrice = ceil($item['price']);
+        $discountPrice = 0;
+
+        if ($item['price'] > 30000) {
+            $discountPrice = floatval($item['price'] - 1500);
+        } else {
+            $discountPrice = floatval($item['price'] - 500);
+        };
+
+        // Calculate discount percentage
+        $discountPercent = 0;
+        if ($originalPrice > 0 && $discountPrice < $originalPrice) {
+            $discountPercent = round((($originalPrice - $discountPrice) / $originalPrice) * 100);
+        }
+        ?>
         <div class="col-md-2 bg-light price_section d-flex flex-column align-items-end justify-content-center rounded">
-            <strike class=""><?php echo "₹" . floatval($item['price']); ?></strike>
-            <h3 class="m-0 font-weight-bold "><?php echo "₹" . floatval($item['price']); ?></h3>
-            <button class="selectBtn">SELECT <span class="material-symbols-outlined">
-                    chevron_right
-                </span></button>
+            <div class="d-flex align-items-center justify-content-end gap-2">
+                <?php if ($discountPercent > 0): ?>
+                    <span class="badge badge-success position-absolute shimmer" style="font-size: 14px !important; top: -10px; right: -10px;"><i class=" text-white"><?php echo $discountPercent; ?>% off</i></span>
+                    <strike>₹<?php echo number_format($originalPrice, 2); ?></strike>
+                <?php endif; ?>
+            </div>
+            <h3 class="m-0 font-weight-bold">₹<?php echo number_format($discountPrice, 2); ?></h3>
+            <a href="cab_details.php?cid=<?= $item['id'] ?>&sid=<?= $sid ?>" rel="noopener noreferrer" class="text-decoration-none text-white">
+                <button class="selectBtn">SELECT
+                    <span class="material-symbols-outlined text-white">chevron_right</span>
+                </button>
+            </a>
+
         </div>
+
     </div>
 
 <?php
 }
 ?>
-
-
-
 <div class="d-flex align-content-center justify-content-between">
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">

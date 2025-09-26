@@ -124,7 +124,7 @@ class db
         $priceRow = $this->db->where('sid', $sid)->getOne('cab_filters', ['price_min', 'price_max']);
         return $priceRow;
     }
-    function get_results($sid, $carType = [], $range = [], $seat_type = [], $short_by = "" ,   $page = 1)
+    function get_results($sid, $carType = [], $range = [], $seat_type = [], $short_by = "",   $page = 1)
     {
         $apiResponse = $this->db->where('sid', $sid);
         $min = $range[0] ?? "";
@@ -148,8 +148,8 @@ class db
         }
 
         $limit = 3;
-        $skip = ($page -1) * $limit;
-        $apiResponse = $this->db->get('car_results',[ $skip , $limit]);
+        $skip = ($page - 1) * $limit;
+        $apiResponse = $this->db->get('car_results', [$skip, $limit]);
 
         $searchResult = $this->db->where('id', $sid)->get('search_request');
         return [
@@ -158,60 +158,9 @@ class db
         ];
     }
 
-
-    function get_results_by_filter($sid, $filter_array)
-    {
-        // echo "<pre>";
-        // print_r(func_get_args());
-        // echo "</pre>";
-        // Extract filters
-        $car_type  = (!empty($filter_array['car_type'])) ? $filter_array['car_type'] : [];
-        $seat_type = (!empty($filter_array['seat_type'])) ? $filter_array['seat_type'] : [];
-        $recommendation = (!empty($filter_array['recommendation'])) ? $filter_array['recommendation'] : "";
-
-        $priceRow = $this->db->where('sid', $sid)->getOne('cab_filters', ['price_min', 'price_max']);
-        $dbMin = ceil($priceRow['price_min']) ?? 0;
-        $dbMax = ceil($priceRow['price_max']) ?? 0;
-
-        // return ceil($priceRow['price_min']);
-
-        $min = ceil($filter_array['price_range'][0]) ?? $dbMin;
-        $max = ceil($filter_array['price_range'][1]) ?? $dbMax;
-
-        if ($min < $dbMin || $max > $dbMax) {
-            $filter_array['price_range'] = [];
-            $min = $dbMin;
-            $max = $dbMax;
-        }
-        $searchResult = $this->db->where('id', $sid)->get('search_request');
-        $this->db->where('sid', $sid);
-        if (!empty($min) && !empty($max) && ($min != $dbMin || $max != $dbMax)) {
-            $this->db->where('price', [$min, $max], 'BETWEEN');
-        }
-        if (!empty($car_type)) {
-            $this->db->where('car_type', $car_type, 'IN');
-        }
-        if (!empty($recommendation)) {
-            if ($recommendation == "low_high") {
-                $this->db->orderBy("price", "ASC");
-            } elseif ($recommendation == "high_low") {
-                $this->db->orderBy("price", "DESC");
-            }
-        }
-        if (!empty($seat_type)) {
-            $this->db->where('car_capacity', $seat_type, 'IN');
-        }
-        $result = $this->db->get('car_results');
-
-        return [
-            'searchResult' => $searchResult,
-            'apiResponse'  => $result
-        ];
-    }
-
     function get_filter($sid)
     {
-        $filterResult = $this->db->where('sid', $sid)->getOne("cab_filters");
+        $filterResult = $this->db->where('sid', $sid)->get("cab_filters");
         return $filterResult;
     }
 
@@ -289,5 +238,58 @@ class db
     {
         $airport = $this->db->where('airport_id', $airport_d)->get('airports');
         return $airport[0];
+    }
+
+
+    function get_selected_cab($cid)
+    {
+        $selectedCab = $this->db->where('id', $cid)->getOne('car_results');
+        $seletedCabId = $this->insert_selected_cab_details($selectedCab);
+
+        return $seletedCabId;
+    }
+
+    function insert_selected_cab_details($selectedCab)
+    {
+        $existing = $this->db->where('sid', $selectedCab['sid'])
+            ->getOne('selected_cab');
+
+        if ($existing) {
+            if ($existing['cid'] != $selectedCab['id']) {
+                $this->db->where('sid', $selectedCab['sid']);
+                $this->db->update('selected_cab', [
+                    'cid' => $selectedCab['id'],
+                    'updated_at' => $this->db->now(),
+                    'update_count' => $this->db->inc(1)
+                ]);
+            }
+            return $existing['id'];
+        } else {
+            $selected_cab_array = [
+                "sid" => $selectedCab['sid'],
+                "cid" => $selectedCab['id'],
+                "created_at" => $this->db->now(),
+                "updated_at" => $this->db->now(),
+                'update_count' => 0
+            ];
+            $seletedCabId = $this->db->insert('selected_cab', $selected_cab_array);
+
+            return $seletedCabId;
+        }
+    }
+
+    function get_selected_cab_details($selectedCabId)
+    {
+
+        $selectedCabDetails = $this->db->where('id', $selectedCabId)->get('selected_cab');
+        $result = $this->get_priculler_cab_against_cid($selectedCabDetails[0]['cid']);
+
+        return $result;
+    }
+
+    function get_priculler_cab_against_cid($cid)
+    {
+        $result = $this->db->where('id' , $cid)->get('car_results');
+        return reset($result);
     }
 }

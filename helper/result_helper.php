@@ -36,7 +36,7 @@ function process_CBZ_cabs($results, $sid)
         $common_array[] = [
             "sid" => $sid,
             "vendor" => "cbz",
-            "card_id" => $data['carId'] ?? "",
+            "car_id" => $data['carId'] ?? "",
             "car_type" => $data['carType'] ?? "",
             "car_capacity" => $carCapacity,
             "inc_distance" => isset($data['includedKm'])
@@ -55,7 +55,7 @@ function process_CBZ_cabs($results, $sid)
             "pet_gst" => (int)$data['petCharges'] - (int)$data['petChargesWithoutGst'] ?? "",
             "total_price" => $data['tollInclusivePrice']['estimatedPrice'] ?? "",
             // "total_gst" => (int)$data['tollInclusivePrice']['estimatedGst'] ?? ""
-            "total_gst" => (isset($data['tollInclusivePrice']['estimatedGst'])) ?? ""
+            "total_gst" => $data['tollInclusivePrice']['estimatedGst'] ?? ""
         ];
     };
 

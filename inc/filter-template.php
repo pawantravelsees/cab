@@ -8,11 +8,11 @@ $results = $db->get_filter($sid);
 // echo "</pre>";
 // die;
 $carTypes = [];
-// foreach ($results as $result) {
-    $carTypes = explode(",", $results['car_types']);
-    $minPrice = $results['price_min'];
-    $maxPrice = $results['price_max'];
-// }
+foreach ($results as $result) {
+    $carTypes = explode(",", $result['car_types']);
+    $minPrice = $result['price_min'];
+    $maxPrice = $result['price_max'];
+}
 
 ?>
 <div class="card shadow-sm p-3 mb-3 rounded">

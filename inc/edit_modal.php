@@ -54,18 +54,18 @@ $results = formate_search_request($request);
 // echo "</pre>";
 // die;
 ?>
-<div class="bg-modify mb-2">
+<div class="bg-modify mb-0 ">
     <div class="container d-lg-block d-none p-1">
         <div class="row  mb-0 align-items-center m-2 my-lg-0 p-1 px-lg-0 no-gutters">
             <div class="col">
                 <div class="d-flex align-items-center text-white">
                     <?php
                     if ($results['trip_info']['trip_type'] == "o") { ?>
-                        <span class="material-symbols-outlined mr-1" style="font-variation-settings: 'FILL' 1; font-size: 20px;">location_on</span>
+                        <span class="material-symbols-outlined text-white mr-1" style="font-variation-settings: 'FILL' 1; font-size: 20px;">location_on</span>
                         <span class="mr-2 font-weight-bold"><?php echo $results['cities'][0]['address'] ?>,</span>
                         <!-- <span class="material-symbols-outlined mx-1" style="font-variation-settings: 'FILL' 1; font-size: 20px;">date_range</span> -->
                         <span class="font-weight-bold mr-2"><?= date('D d, M h:i', strtotime($results['trip_info']['departure_date'])) ?> - </span>
-                        <span class="material-symbols-outlined">
+                        <span class="material-symbols-outlined text-white">
                             departure_board
                         </span>
                         <span class="font-weight-bold mr-3"><?php
@@ -75,10 +75,11 @@ $results = formate_search_request($request);
                                                             }
 
                                                             ?></span>
-                        <span class="material-symbols-outlined mr-1" style="font-variation-settings: 'FILL' 1; font-size: 20px;">directions_car</span>
+                        <span class="material-symbols-outlined text-white mr-1" style="font-variation-settings: 'FILL' 1; font-size: 20px;">directions_car</span>
                         <span class="mr-3"><?= $results['trip_info']['trip_way'] ?></span>
                     <?php
                     } elseif ($results['trip_info']['trip_type'] == "a") {
+                        
                         function extractDetails($string)
                         {
                             $parts = explode(' ', trim($string));
@@ -119,30 +120,88 @@ $results = formate_search_request($request);
                         </p>
 
                     <?php
+                    } elseif ($results['trip_info']['trip_type'] == "l") {
+                        $cityId = $request['details'][0]['cityId'];
+                        $cityName = $db->get_local_city_details($cityId);
+                        // echo "<pre>";
+                        // // echo $cityName;
+                        // print_r(($request));
+                        // echo "</pre>";
+                    ?>
+                        <p class="m-0 p-0 mr-1">
+                            <span class="mr-0 font-weight-bold"><?php echo $cityName['city_name'] ?></span>,
+                        </p>
+                        <p class="m-0 p-0 mr-1">
+                            <span class="mr-0 font-weight-bold"><?php
+                                                                $bookingType = $request['details'][0]['fareType'];
+                                                                $localCabKM = "";
+                                                                if (isset($bookingType)) {
+                                                                    if ($bookingType == "2_20") {
+                                                                        $localCabKM = "2 Hours , 20Km";
+                                                                    } else if ($bookingType == "4_40") {
+                                                                        $localCabKM = "4 Hours , 40Km";
+                                                                    } else if ($bookingType == "8_80") {
+                                                                        $localCabKM = "8 Hours , 80Km";
+                                                                    } else if ($bookingType == "12_120") {
+                                                                        $localCabKM = "12 Hours , 120Km";
+                                                                    } else {
+                                                                        $localCabKM = $bookingType . " KM";
+                                                                    }
+                                                                }
+                                                                echo "($localCabKM)";
+                                                                ?></span>,
+                        </p>
+                        <p class="m-0 p-0 mr-2">
+                            <span class="font-weight-bold mx-2"><?= date('D d, M h:i', strtotime($request['details'][0]['departureAt'])) ?> </span>
+                        </p>
+                    <?php
                     }
                     ?>
                     <div class="ml-auto">
-                        <button class="btn text-white bgshade-2 btn-lg px-3 py-2 edit round mr-0 text-center modifyBtn" style="border: 0; font-size: 16px;" data-toggle="modal" data-tripType="<?php echo $results['trip_info']['trip_type'] ?>"><span class="material-symbols-outlined edit">
-                                edit
-                            </span> Change</button>
+                        <?php
+                        $btnText = "";
+                        $btnIcon = "";
+                        $pageUrl = "#";
+
+                        if ($pagename == 'results.php') {
+                            $btnText = "Change";
+                            $btnIcon = "edit";
+                        } elseif ($pagename == 'cab_details.php') {
+                            $btnText = "Go Back";
+                            $btnIcon = "chevron_left"; // "chevron_backward" isn’t valid in Material Symbols
+                            $pageUrl = "results.php?sid=" . $sid;
+                        }
+                        ?>
+
+                        <a href="<?= $pageUrl ?>"
+                            class="btn text-white bgshade-2 btn-lg px-3 py-2 edit round mr-0 text-center modifyBtn"
+                            style="border: 0; font-size: 14px;"
+                            data-toggle="modal"
+                            data-tripType="<?= $results['trip_info']['trip_type'] ?>">
+                            <span class="material-symbols-outlined text-white"><?= $btnIcon ?></span>
+                            <?= $btnText ?>
+                        </a>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 
 </div>
-<?php if ($results['trip_info']['trip_type'] == "o") { ?>
-    <div class="container mt-0">
-        <ul class="d-flex justify-content-start align-content-center result_your_itinerary m-0 p-0 mb-3">
-            <?php
-            foreach ($results['cities'] as $city) {
-            ?>
-                <li class="border-0 itinerary_list"><?= $city['address'] ?></li>
-                <span class="material-symbols-outlined itinerary_arrow"> arrow_forward </span>
-            <?php
-            }
-            ?>
-        </ul>
+<?php if (($results['trip_info']['trip_type'] == "o") && ($pagename == 'results.php') || ($results['trip_info']['trip_type'] == "o") && ($pagename == 'cab_details.php')) { ?>
+    <div class="bg-custom_gray pt-2">
+        <div class="container mt-0 ">
+            <ul class="d-flex justify-content-start align-content-center result_your_itinerary m-0 p-0 pb-2">
+                <?php
+                foreach ($results['cities'] as $city) {
+                ?>
+                    <li class="border-0 itinerary_list"><?= $city['address'] ?></li>
+                    <span class="material-symbols-outlined itinerary_arrow"> arrow_forward </span>
+                <?php
+                }
+                ?>
+            </ul>
+        </div>
     </div>
 <?php } ?>

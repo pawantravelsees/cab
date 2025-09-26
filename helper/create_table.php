@@ -5,7 +5,7 @@ $db = new db();
 //     id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 //     sid VARCHAR(100) NOT NULL,
 //     vender VARCHAR(50) NOT NULL DEFAULT 'cbz',
-//     card_id VARCHAR(50) NOT NULL,
+//     car_id VARCHAR(50) NOT NULL,
 //     car_type VARCHAR(50) NOT NULL,
 //     inc_distance DECIMAL(10,2) NOT NULL,
 //     price DECIMAL(10,2) NOT NULL,
@@ -24,19 +24,27 @@ $db = new db();
 
 // $db->create_table($sql);
 
-$sql = "CREATE TABLE cab_filters (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    sid INT NOT NULL,                         -- search/session ID
-    car_types VARCHAR(255) DEFAULT NULL,      -- comma separated (hatchback, sedan, etc.)
-    price_min INT DEFAULT NULL,               -- lower bound from range
-    price_max INT DEFAULT NULL,               -- upper bound from range
-    seating_capacity INT DEFAULT NULL,        -- selected seating capacity
-    pet_allowed TINYINT(1) DEFAULT 0,         -- 0 = no, 1 = yes
-    carrier_charge TINYINT(1) DEFAULT 0,
-    new_car_charge TINYINT(1) DEFAULT 0,
-    sort_by VARCHAR(50) DEFAULT 'best',       -- sort option
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)";
+// $sql = "CREATE TABLE cab_filters (
+//     id INT AUTO_INCREMENT PRIMARY KEY,
+//     sid INT NOT NULL,                         
+//     car_types VARCHAR(255) DEFAULT NULL,    
+//     price_min INT DEFAULT NULL,             
+//     price_max INT DEFAULT NULL,               
+//     seating_capacity INT DEFAULT NULL,     
+//     pet_allowed TINYINT(1) DEFAULT 0,       
+//     carrier_charge TINYINT(1) DEFAULT 0,
+//     new_car_charge TINYINT(1) DEFAULT 0,
+//     sort_by VARCHAR(50) DEFAULT 'best',    
+//     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+// )";
 
+// $sql = "CREATE TABLE selected_cab(
+// id INT AUTO_INCREMENT PRIMARY KEY,
+// sid INT NOT NULL,
+// cid INT NOT NULL,
+// updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+// created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
-$db->create_table($sql);
+// )";
+
+// $db->create_table($sql);

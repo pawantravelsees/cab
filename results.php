@@ -22,99 +22,58 @@ if (isset($request['details'][0]['airportId'])) {
 if (isset($request['details']) && $request['details'][0]['trip_type'] == "o") {
     $itinerary_list = json_encode(array_merge([["id" => (string)$request['details'][0]['pickup_id'], "address" => $request['details'][0]['pickup']]], json_decode($request['details'][0]['more_cities'], 1), [["id" => (string)$request['details'][0]['destination_id'], "address" => $request['details'][0]['destination']]]));
 }
+
 ?>
 <?php
 include "./inc/edit_modal.php";
 ?>
-<div class="container d-flex align-items-start gap-3">
-    <div class="col-md-3 h-100 p-0" id="filter">
-    </div>
-    <div class="col-md-9 m-0 p-0">
-        <div class="container d-flex justify-content-center align-items-end flex-column">
-            <div class="w-100 imgSection">
-                <img src="./img/Anniversary-33.jpg" alt="" class="border px-4 mb-3 img-fluid rounded d-none d-md-block">
-            </div>
-            <div class="mb-3 col-md-2 mx-0 p-0">
-                <form id="recommendation">
-                    <select id="sortOptions" name="short_by" class="custom-select custom-select-sm shadow-none">
-                        <option value="" selected>Recommended</option>
-                        <option value="low_high">Price (Low to High)</option>
-                        <option value="high_low">Price (High to Low)</option>
-                        <option value="duration">Duration (Less to More)</option>
-                        <option value="gst">With GST</option>
-                    </select>
-                </form>
-            </div>
+<div class="bg-custom_gray pt-3 min-vh-100">
+    <div class="container d-flex align-items-start gap-3 bg-light-gray">
+        <div class="col-md-3 h-100 p-0" id="filter">
         </div>
-        <div id="result" class="col-md-12">
-        </div>
-        <?php
-        $filterResults = $db->get_filter($sid);
-        // echo "<pre>";
-        // print_r($filterResults[0]['total_result']);
-        // echo "</pre>";
-        // die;
-        ?>
-        <!-- <div class="d-flex align-content-center justify-content-between">
-            <?php
-            $totalResults = $filterResults[0]['total_result'];
-            // $totalResults = count($results['apiResponse']);
-            $perPage = 3;
-            $totalPages = ceil($totalResults / $perPage);
-            $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-            if ($currentPage < 1) $currentPage = 1;
-            if ($currentPage > $totalPages) $currentPage = $totalPages;
-            ?>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item <?= ($currentPage == 1) ? 'disabled' : '' ?>">
-                        <a class="page-link" href="result.php?sid=<?= $sid ?>&page=<?= $currentPage - 1 ?>" tabindex="-1">Previous</a>
-                    </li>
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <li class="page-item <?= ($i == $currentPage) ? 'active' : '' ?>">
-                            <a class="page-link" href="result.php?sid=<?= $sid ?>&page=<?= $i ?>"><?= $i ?></a>
-                        </li>
-                    <?php endfor; ?>
+        <div class="col-md-9 m-0 p-0">
+            <div class="container d-flex justify-content-center align-items-end flex-column">
+                <div class="w-100 imgSection">
+                    <img src="./img/Anniversary-33.jpg" alt="" class="border object-fit-contain px-0 mb-3 img-fluid rounded d-none d-md-block">
+                </div>
+                <div class="col-md-12 d-flex justify-content-between">
+                    <div class="mx-0 p-0">
+                        <span class="small resultCount"><?php //echo $resultsummary[0]['total_result'] ?></span>
+                    </div>
+                    <div class="mb-3 col-md-2 mx-0 p-0">
 
-                    <li class="page-item <?= ($currentPage == $totalPages) ? 'disabled' : '' ?>">
-                        <a class="page-link" href="result.php?sid=<?= $sid ?>&page=<?= $currentPage + 1 ?>">Next</a>
-                    </li>
-
-                </ul>
-            </nav>
-            <div class="d-flex justify-content-between align-items-start gap-2">
-                <span class="text-muted">
-                    Showing <strong>1</strong> to <strong>10</strong> of <strong>100</strong> entries
-                </span>
-
-                <div>
-                    <label for="DataCount" class="form-label me-2">Show</label>
-                    <select id="DataCount" class="form-select form-select-lg " aria-label=".form-select-lg example">
-                        <option value="10" selected>10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
+                        <form id="recommendation">
+                            <select id="sortOptions" name="short_by" class="custom-select custom-select-sm shadow-none">
+                                <option value="" selected>Recommended</option>
+                                <option value="low_high">Price (Low to High)</option>
+                                <option value="high_low">Price (High to Low)</option>
+                                <option value="duration">Duration (Less to More)</option>
+                                <option value="gst">With GST</option>
+                            </select>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div> -->
-    </div>
+            <div id="result" class="col-md-12">
+            </div>
+        </div>
 
-    <div class="modal" id="cabBookingModal" tabindex="-1" aria-labelledby="cabBookingModalLabel" aria-hidden="true">
-        <div class="d-flex align-items-center justify-content-center h-100">
-            <div class="modal-content rounded-4 shadow" style="width:450px; ">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="cabBookingModalLabel">Search & Book Your Cab</h5>
-                    <button type="button"
-                        class="btn-close btn btn-link p-0 border-0 shadow-none text-white d-flex align-items-center"
-                        data-bs-dismiss="modal"
-                        aria-label="Close">
-                        <span class="material-symbols-outlined fs-4">close</span>
-                    </button>
-                    </button>
-                </div>
-                <div class="modal-body" style="padding:10px 25px;">
-                    <?php include('./inc/search-form.php') ?>
+        <div class="modal" id="cabBookingModal" tabindex="-1" aria-labelledby="cabBookingModalLabel" aria-hidden="true">
+            <div class="d-flex align-items-center justify-content-center h-100">
+                <div class="modal-content rounded-4 shadow overflow-hidden" style="width:400px; ">
+                    <div class="modal-header px-3 py-3">
+                        <h5 class="modal-title " id="cabBookingModalLabel">Edit Search</h5>
+                        <button type="button"
+                            class="btn-close btn btn-link p-0 border-0 shadow-none text-white d-flex align-items-center"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <span class="material-symbols-outlined fs-4">close</span>
+                        </button>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="padding:10px 10px;">
+                        <?php include('./inc/search-form.php') ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -236,8 +195,12 @@ require './inc/footer.php';
             if (tripType == "o") {
                 $("#cabBookingModal").modal("show");
                 $('#pickupCity').attr('required', true)
+                $('.outstation').addClass('active')
+                $('.localTripType').removeClass('active')
                 $('#selectDestinationcity').removeAttr('required')
             } else if (tripType == "l") {
+                $('.outstation').removeClass('active')
+                $('.localTripType').addClass('active')
                 $("#searchCar").removeClass('d-block')
                 $("#searchCar").addClass('d-none')
                 $('#pickupCity').removeAttr('required')
@@ -245,11 +208,12 @@ require './inc/footer.php';
                 $("#localTrip").removeClass('d-none')
                 $("#airport").removeClass('d-block')
                 $("#airport").addClass('d-none')
-                $('#airportTransfer').addClass('fade')
                 $("#cabBookingModal").modal("show");
                 $('#selectDestinationcity').removeAttr('required')
             } else {
                 getLocalCitiesAgainstAirport()
+                $('.outstation').removeClass('active')
+                $('.localTripType').addClass('active')
                 $('#pickupCity').removeAttr('required')
                 $('#selectDestinationcity').attr('required', true)
                 $("#searchCar").removeClass('d-block')
@@ -260,8 +224,8 @@ require './inc/footer.php';
                 $("#localCity").removeClass('d-block')
                 $("#airport").removeClass('d-none')
                 $("#airport").addClass('d-block')
-                $('#localRental').addClass('fade')
                 $("#cabBookingModal").modal("show");
+
             }
         })
 
@@ -274,10 +238,15 @@ require './inc/footer.php';
     $(document).ready(function() {
         let today = new Date();
         let departTime = new Date(today.getTime() + 65 * 60 * 1000);
-        let depDateStr = "<?= date('Y-m-d H:i', strtotime($results['trip_info']['departure_date'] ?? 'now')); ?>";
-        let ariDateStr = "<?= date('Y-m-d', strtotime($results['trip_info']['arrival_date'] ?? 'now')); ?>";
-        let localPickupAt = "<?= date('Y-m-d H:i', strtotime($request['details'][0]['departureAt'] ?? 'now')); ?>";
-
+        let depDateStr = "<?= (!empty($results['trip_info']['departure_date']))
+                                ? date('d-M-Y H:i', strtotime($results['trip_info']['departure_date']))
+                                : date('d-M-Y H:i', strtotime('today')) ?>";
+        let ariDateStr = "<?= (!empty($results['trip_info']['arrival_date']))
+                                ? date('d-M-Y', strtotime($results['trip_info']['arrival_date']))
+                                : date('d-M-Y', strtotime('today')) ?>";
+        let localPickupAt = "<?= (!empty($request['details'][0]['departureAt']))
+                                    ? date('d-M-Y H:i', strtotime($request['details'][0]['departureAt']))
+                                    : date('d-M-Y H:i', strtotime('today')) ?>";
 
         let depDate = new Date(depDateStr);
         let ariDate = new Date(ariDateStr);
@@ -296,7 +265,6 @@ require './inc/footer.php';
             onChange: function(selectedDates) {
                 if (selectedDates.length > 0) {
                     console.log(selectedDates);
-
                     let newDep = selectedDates[0];
                     arrivalAt.set("minDate", newDep);
                     if (arrivalAt.selectedDates.length === 0 || arrivalAt.selectedDates[0] <= newDep) {
@@ -342,6 +310,8 @@ require './inc/footer.php';
 
         })
     }
+
+  
 </script>
 
 <?php

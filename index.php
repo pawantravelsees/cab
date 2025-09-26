@@ -9,51 +9,49 @@ require './inc/header.php';
 <!-- loader -->
 <!-- Page content start -->
 <!-- hero section start-->
-<div class="container hero_section p-4">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-5 bg-light rounded-pill overflow-hidden ">
-                <div class="row rounded justify-content-center">
-                    <div class="col-md-6 bg-warning ">
-                        <a href="#" class="d-flex nav-link flex-column text-center text-dark p-0 mt-1">
-                            <span class="material-symbols-outlined" style="vertical-align: middle;font-size:35px;margin-bottom:-5px;">local_taxi</span>
-                            <span>Cabs</span>
-                        </a>
-                    </div>
-                    <div class="col-md-6">
-                        <a class="d-flex nav-link flex-column text-center text-dark p-0 mt-1" href="#">
-                            <span class="material-symbols-outlined" style="vertical-align: middle;font-size:35px;margin-bottom:-5px;">directions_bus</span>
-                            <span class="mb-0">Bus Tickets</span>
-                        </a>
-                    </div>
-                </div>
+<div class="container hero_section p-0 ">
+    <div class="container" style="height: auto;">
+        <div class="row ">
+            <div class="my-3">
+                <h5 class="bold text-light p-2 rounded m-0" style="background-color: rgba(0, 0, 0, 0.5); display:inline-block;">Find Cabs</h5>
             </div>
         </div>
-        <div class="row mt-3">
-            <div class="col-md-5 bg-light rounded-xl overflow-hidden p-0 pb-2" style="min-height: 400px; ">
-                <div class="top bg-warning w-full p-0">
-                    <p class="text-center py-1 h5">All India Cab Service</p>
-                </div>
-                <div class="row mx-3 align-items-center mt-4">
-                    <div class="col-md-12">
-                        <div class="row align-items-center flex-md-nowrap justify-content-between">
-                            <div class="col-md-6 px-1">
-                                <p class=" text-center text-lg py-2-5 rounded-xl cursor-pointer  hover-yellow-box mb-2 bookingType active outstation">Outstation</p>
-                            </div>
-                            <div class="col-md-6 px-1">
-                                <p class=" text-center text-lg py-2-5 rounded-xl cursor-pointer hover-yellow-box mb-2 bookingType localTripType"> Local / Airport</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- outestanding form -->
-                    <div class="col-md-12">
-                        <?php
-                        include "./inc/search-form.php";
-                        ?>
-                    </div>
+        <div class="row mt-0 gap-2 flex-nowrap align-items-stretch">
+            <!-- Left Column -->
+            <div class="col-md-4 bg-light rounded overflow-hidden p-0 mr-3" style="min-height: 350px;">
+                <div class="row mx-2 align-items-start mt-3">
+                    <?php include "./inc/search-form.php"; ?>
                 </div>
             </div>
+
+            <!-- Right Column -->
+            <div class="col-md-8 p-0 m-0 rounded overflow-hidden border d-flex" style="min-height: 350px;">
+                <img src="./img/Refund-VSF.jpg"
+                    alt="festival Sell"
+                    class="rounded img-fluid object-fit-cover w-100 h-100">
+            </div>
+        </div>
+    </div>
+    <div class="wave-header">
+        <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+                <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+            </defs>
+            <g class="parallax">
+                <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7"></use>
+                <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)"></use>
+                <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)"></use>
+                <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff"></use>
+            </g>
+        </svg>
+    </div>
+    <div class="container ">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 mt-2 mb-4 mt-sm-12 text-center"><br>
+                <img src="/img/footer-trustlogo_new.png?dd" class="img-fluid d-none d-md-inline" style="max-width:800px;">
+                <img src="/img/footer-trustlogo_new.png?dd" class="img-fluid d-inline d-md-none">
+            </div>
+
         </div>
     </div>
 </div>
@@ -104,10 +102,6 @@ require './inc/footer.php';
             defaultDate: depTime,
         });
     })
-
-
-
-    
 </script>
 
 <?php
