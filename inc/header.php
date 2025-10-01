@@ -10,12 +10,12 @@
 
 
             <?php
-            if (($pagename == "results.php")|| ($pagename == "cab_details.php"))   { ?>
+            if (($pagename == "results.php") || ($pagename == "cab_details.php") || ($pagename == 'payment.php') || ($pagename == 'ticket.php')) { ?>
                 <div class="breadcrumb_a ml-auto mr-auto flat d-none d-md-block">
-                    <a href="#" class="<?php if (($pagename == 'cab_details.php') || ($pagename == 'results.php')) echo 'active'; ?>">Search</a>
-                    <a href="#" class="<?php if ($pagename == 'cab_details.php') echo 'active'; ?>">Select</a>
-                    <a href="#" class="">Payment</a>
-                    <a href="#" class="">Confirmation</a>
+                    <a href="#" class="<?php if (($pagename == 'cab_details.php') || ($pagename == 'results.php') || ($pagename == 'payment.php') || ($pagename == 'ticket.php')) echo 'active'; ?>">Search</a>
+                    <a href="#" class="<?php if (($pagename == 'cab_details.php') || ($pagename == 'payment.php') || ($pagename == 'ticket.php')) echo 'active'; ?>">Select</a>
+                    <a href="#" class="<?php if (($pagename == 'payment.php') || ($pagename == 'ticket.php')) echo 'active' ?>">Payment</a>
+                    <a href="#" class="<?php if (($pagename == 'ticket.php')) echo 'active' ?>">Confirmation</a>
                 </div>
             <?php
             } else {

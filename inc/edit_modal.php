@@ -79,7 +79,7 @@ $results = formate_search_request($request);
                         <span class="mr-3"><?= $results['trip_info']['trip_way'] ?></span>
                     <?php
                     } elseif ($results['trip_info']['trip_type'] == "a") {
-                        
+
                         function extractDetails($string)
                         {
                             $parts = explode(' ', trim($string));
@@ -168,15 +168,22 @@ $results = formate_search_request($request);
                             $btnIcon = "edit";
                         } elseif ($pagename == 'cab_details.php') {
                             $btnText = "Go Back";
-                            $btnIcon = "chevron_left"; // "chevron_backward" isn’t valid in Material Symbols
+                            $btnIcon = "chevron_left";
                             $pageUrl = "results.php?sid=" . $sid;
+                        } elseif ($pagename == 'payment.php') {
+                            $btnText = "Go Back";
+                            $btnIcon = "chevron_left";
+                            $pageUrl = "cab_details.php?cid=" . $cid . "&sid=" . $sid;
+                        } elseif ($pagename == 'ticket.php') {
+                            $btnText = "Go Back";
+                            $btnIcon = "chevron_left";
+                            $pageUrl = "payment.php?bid=" . $bid;
                         }
                         ?>
-
                         <a href="<?= $pageUrl ?>"
                             class="btn text-white bgshade-2 btn-lg px-3 py-2 edit round mr-0 text-center modifyBtn"
                             style="border: 0; font-size: 14px;"
-                            data-toggle="modal"
+                            <?php echo ($pagename == "results.php") ? 'data-toggle="modal"' : ""; ?>
                             data-tripType="<?= $results['trip_info']['trip_type'] ?>">
                             <span class="material-symbols-outlined text-white"><?= $btnIcon ?></span>
                             <?= $btnText ?>

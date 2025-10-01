@@ -175,13 +175,11 @@ require './inc/footer.php';
                     $.post("inc/filter-template.php", {
                         "sid": "<?= $sid ?>"
                     }, (data) => {
-                        // console.log(data);
                         $("#filter").html(data);
                     })
                     $.post("inc/summary-template.php", {
                         "sid": "<?= $sid ?>"
                     }, (data) => {
-                        // console.log(data);
                         $("#result").html(data);
                     })
                 } else {}
@@ -264,7 +262,7 @@ require './inc/footer.php';
             defaultDate: depDate,
             onChange: function(selectedDates) {
                 if (selectedDates.length > 0) {
-                    console.log(selectedDates);
+                    // console.log(selectedDates);
                     let newDep = selectedDates[0];
                     arrivalAt.set("minDate", newDep);
                     if (arrivalAt.selectedDates.length === 0 || arrivalAt.selectedDates[0] <= newDep) {

@@ -5,6 +5,7 @@ $pageTitle = "Tripodeal Cabs - Fare ";
 // require './inc/head.php';
 
 require 'helper/db.php';
+require 'helper/booking_initiate.php';
 require 'helper/cabbazar.php';
 require 'helper/result_helper.php';
 $db = new db();
@@ -60,6 +61,10 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] === "outstation") {
     $endpoint = "/fare";
     $sid = $db->insert_search_request($searchRequest);
     $results = $cb->search($sid, $endpoint);
+    // echo "<pre>";
+    // print_r($results);
+    // echo "</pre>";
+    // die;
     $db->update_scp($sid, 3);
     $results = process_CBZ_cabs($results, $sid);
     $filter = cab_filters($results);
@@ -116,4 +121,69 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] === "airport") {
     $db->insert_booking_details($results);
     $db->update_scp($sid, 2);
     header("Location: results.php?sid=" . $sid);
+}
+
+if (isset($_REQUEST['action']) && $_REQUEST['action'] === "booking_initate") {
+
+    $carrier = (isset($_REQUEST['carrier']) ? 1 : 0);
+    $carModel = (isset($_REQUEST['carModel']) ? 1 : 0);
+    $driverLanguage = (isset($_REQUEST['driverLanguage']) ? 1 : 0);
+    $petAllowed = (isset($_REQUEST['petAllowed']) ? 1 : 0);
+    $refundable = (isset($_REQUEST['refundable']) ? 1 : 0);
+    $billingAddressAsPickupAddredd = (isset($_REQUEST['billingAddressAsPickupAddredd']) ? 1 : 0);
+
+
+    if (isset($_REQUEST['paymentOption']) && $_REQUEST['paymentOption'] === "fullPay") {
+        $booking_array =
+            [
+                'sid' => $_REQUEST['sid'],
+                'carrier' => 1,
+                'car_model' => 1,
+                'driver_language' => 1,
+                'pet_allowed' => 1,
+                'refundable' => 1,
+                'pickup_live_location' => (isset($_REQUEST['pickupLiveLocation']) ? $_REQUEST['pickupLiveLocation'] : ""),
+                'customer_name' => (isset($_REQUEST['customerName']) ? $_REQUEST['customerName'] : ""),
+                'gender' => (isset($_REQUEST['gender'])) ? $_REQUEST['gender'] : "",
+                'country_code' => (isset($_REQUEST['countryCode']) ? $_REQUEST['countryCode'] : ""),
+                'phone' => (isset($_REQUEST['phone']) ? $_REQUEST['phone'] : ""),
+                'email' => (isset($_REQUEST['email']) ? $_REQUEST['email'] : ""),
+                'billing_addr_as_pickup_addr' => (isset($_REQUEST['billingAddressAsPickupAddredd']) ? 1 : 0),
+                'payment_option' => (isset($_REQUEST['paymentOption']) ? $_REQUEST['paymentOption'] : "")
+            ];
+    } else {
+        $booking_array = [
+            'sid' => $_REQUEST['sid'],
+            'carrier' => (isset($_REQUEST['carrier']) ? 1 : 0),
+            'car_model' => (isset($_REQUEST['carModel']) ? 1 : 0),
+            'driver_language' => (isset($_REQUEST['driverLanguage']) ? 1 : 0),
+            'pet_allowed' => (isset($_REQUEST['petAllowed']) ? 1 : 0),
+            'refundable' => (isset($_REQUEST['refundable']) ? 1 : 0),
+            'pickup_live_location' => (isset($_REQUEST['pickupLiveLocation']) ? $_REQUEST['pickupLiveLocation'] : ""),
+            'customer_name' => (isset($_REQUEST['customerName']) ? $_REQUEST['customerName'] : ""),
+            'gender' => (isset($_REQUEST['gender'])) ? $_REQUEST['gender'] : "",
+            'country_code' => (isset($_REQUEST['countryCode']) ? $_REQUEST['countryCode'] : ""),
+            'phone' => (isset($_REQUEST['phone']) ? $_REQUEST['phone'] : ""),
+            'email' => (isset($_REQUEST['email']) ? $_REQUEST['email'] : ""),
+            'billing_addr_as_pickup_addr' => (isset($_REQUEST['billingAddressAsPickupAddredd']) ? 1 : 0),
+            'payment_option' => (isset($_REQUEST['paymentOption']) ? $_REQUEST['paymentOption'] : ""),
+        ];
+    }
+    $bid = $db->booking_details_insert($booking_array);
+    header("Location: payment.php?bid=" . $bid);
+}
+
+if (isset($_REQUEST['action']) && $_REQUEST['action'] === "make_booking") {
+    $bid = $_REQUEST['bid'];
+    $bookingDetails = $db->fetch_booking_details($bid);
+    $sid = $bookingDetails['sid'];
+    $selectedCab = $db->selected_cab($sid);
+    $cid = $selectedCab['cid'];
+    $selectedCabResult = $db->get_priculler_cab_against_cid($cid);
+    $request = $db->get_search_request($sid);
+    $results = make_booking_initiate($bookingDetails, $selectedCabResult, $request);
+    $results = $cb->cab_booking_initiate($results, $sid);
+    $booking_array = make_bookings_array($results, $sid);
+    $bookingId = $db->insert_bookings_details($booking_array);
+    echo json_encode($bookingId);
 }

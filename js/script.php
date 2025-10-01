@@ -3,7 +3,7 @@
         let yourItinerary = [];
         <?php if (isset($itinerary_list)) { ?>
             yourItinerary = JSON.parse('<?= $itinerary_list ?>');
-            console.log(yourItinerary);
+            // console.log(yourItinerary);
         <?php } ?>
 
         let pickupLocation = $('#pickupCity');
@@ -258,8 +258,6 @@
             let localCity = data.localCity;
             let localCityPackage = data.localCityPackage;
             let airports = data.airports;
-
-            // console.log(data);
             let selectedCity = "<?= isset($selectedCity['city_name']) ? $selectedCity['city_name'] : '' ?>";
 
             localCity.forEach(element => {
@@ -291,7 +289,6 @@
                         break;
                 }
 
-                // check if this package should be selected
                 let isSelected = (element.package_type === selectedPackage) ? "selected" : "";
 
                 $('#selectPackage').append(`
@@ -338,7 +335,6 @@
             $('#selectRoute').removeAttr('required');
             $('#selectAirport').removeAttr('required');
             $('#selectDestinationcity').removeAttr('required');
-            console.log("local");
         })
         $(document).on('change', "input[name='local-trip-type']", function(e) {
             // alert($(this).val() + " " + "clicked")
@@ -380,9 +376,6 @@
                             airportId: $(this).val(),
                             fareType: airportRoute
                         }, (data) => {
-                            // console.log(data);
-                            // return;
-                            // let cities = JSON.parse(data);
                             $('.showLocalCities').empty();
                             $('.showLocalCities').append(`<option selected disabled value=""></option>`)
                             if (airportRoute === "from-airport") {
@@ -396,14 +389,8 @@
                                 );
                             });
                         })
-
                         return
-
                     })
-
-
-                    console.log(sp.val());
-
                     if (airportRoute === "from-airport") {
                         $('#selectDestinationcity option:first').text('Select destination city');
                     } else if (airportRoute === "to-airport") {

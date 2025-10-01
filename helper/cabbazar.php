@@ -9,7 +9,7 @@ class cabbazar
         $this->apikey = "892aafbf-e283-4df0-a738-7a1f3daf798f";
     }
 
-    function CALL_API($endpoint, $method, $jsonRequest)
+    function CALL_API($endpoint, $method, $jsonRequest, $sid = 0)
     {
         $url = $this->base_url . $endpoint;
         if ($method == "GET") {
@@ -25,7 +25,39 @@ class cabbazar
             curl_setopt($curl, CURLOPT_POSTFIELDS, $jsonRequest);
         }
         $response = json_decode(curl_exec($curl), 1);
+        if ($method != "GET") {
+            $logs =  $this->create_logs($jsonRequest, $response, $url, $sid);
+        }
         return $response;
+    }
+
+    function create_logs($jsonRequest, $response, $url, $sid)
+    {
+        require_once 'helper/db.php';
+        $db = new db();
+        $type = "";
+        $searchType =  $db->get_search_type_for_logs($sid);
+        $searchType =  reset($searchType);
+        if (isset($searchType) && $searchType == "o") {
+            $type = "outstation";
+        } elseif (isset($searchType) && $searchType == "a") {
+            $type = "airport";
+        } else {
+            $type = "local";
+        }
+
+        $response = json_encode($response);
+        $vendor = "cbz";
+        $log_array = [
+            "request" => $jsonRequest,
+            "response" => $response,
+            "sid" => $sid,
+            "url" => $url,
+            "search_type" => $type,
+            "vendor" => $vendor,
+            "created_at" => date('Y-m-d H:i:s', strtotime('now'))
+        ];
+        $db->insert_request_response_logs($log_array);
     }
 
     function make_search_request($searchRequest)
@@ -82,7 +114,7 @@ class cabbazar
         $db = new db();
         $searchRequest = $db->get_search_request($sid);
         $jsonRequest = $this->make_search_request($searchRequest);
-        $response = $this->CALL_API($endpoint, $method, $jsonRequest);
+        $response = $this->CALL_API($endpoint, $method, $jsonRequest, $sid);
         return $response;
     }
 
@@ -92,6 +124,17 @@ class cabbazar
         $method = "GET";
         $requestCities['key'] = $this->apikey;
         $response = $this->CALL_API($endpoint, $method, $requestCities);
+        return $response;
+    }
+
+    function cab_booking_initiate($payload, $sid)
+    {
+        $endpoint = '/booking/initiate';
+        $method = 'POST';
+        $payload['key'] = $this->apikey;
+        // return $payload;
+        $payload = json_encode($payload);
+        $response = $this->CALL_API($endpoint, $method, $payload, $sid);
         return $response;
     }
 }

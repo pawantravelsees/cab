@@ -183,8 +183,7 @@ class db
 
     // function create_table($sql)
     // {
-    //   $this->db->query($sql);
-
+    //     $this->db->query($sql);
     // }
 
     function suggestion($query)
@@ -289,7 +288,68 @@ class db
 
     function get_priculler_cab_against_cid($cid)
     {
-        $result = $this->db->where('id' , $cid)->get('car_results');
+        $result = $this->db->where('id', $cid)->get('car_results');
         return reset($result);
+    }
+
+
+
+    function booking_details_insert($booking_array)
+    {
+        $existing = $this->db->where('sid', $booking_array['sid'])
+            ->getOne('cab_booking');
+
+        if ($existing) {
+            $this->db->where('sid', $booking_array['sid']);
+            $this->db->update('cab_booking', array_merge($booking_array, [
+                'updated_at'   => $this->db->now(),
+                'update_count' => $this->db->inc(1)
+            ]));
+
+            return $existing['id'];
+        } else {
+            $booking_array['created_at']   = $this->db->now();
+            $booking_array['updated_at']   = $this->db->now();
+            $booking_array['update_count'] = 0;
+
+            $bid = $this->db->insert('cab_booking', $booking_array);
+            return $bid;
+        }
+    }
+
+    function fetch_booking_details($bid)
+    {
+        $bookingDetails = $this->db->where('id', $bid)->getOne('cab_booking');
+        return $bookingDetails;
+    }
+
+    function selected_cab($sid)
+    {
+        $result = $this->db->where('sid', $sid)->getOne('selected_cab');
+        return $result;
+    }
+
+
+    function get_search_type_for_logs($sid)
+    {
+        $searchType = $this->db->where('id', $sid)->getOne('search_request', 'trip_type');
+        return $searchType;
+    }
+
+    function insert_request_response_logs($log_array)
+    {
+        $this->db->insert('request_response_logs', $log_array);
+    }
+
+    function insert_bookings_details($booking_array)
+    {
+        $bookingId = $this->db->insert('bookings', $booking_array);
+        return $bookingId;
+    }
+
+
+    function get_bookings($sid){
+        $bookings = $this->db->where('sid' , $sid)->getOne('bookings');
+        return $bookings;
     }
 }

@@ -38,13 +38,24 @@ $db = new db();
 //     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 // )";
 
-// $sql = "CREATE TABLE selected_cab(
-// id INT AUTO_INCREMENT PRIMARY KEY,
-// sid INT NOT NULL,
-// cid INT NOT NULL,
-// updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-// created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-
+// $sql = "CREATE TABLE cab_booking (
+//     id INT AUTO_INCREMENT PRIMARY KEY,
+//     sid INT NOT NULL,
+//     carrier TINYINT(1) DEFAULT 0,          -- 0 = No, 1 = Yes
+//     car_model TINYINT(1) DEFAULT 0,         -- 0 = No, 1 = Yes
+//     driver_language TINYINT(1) DEFAULT 0,   -- 0 = No, 1 = Yes
+//     pet_allowed TINYINT(1) DEFAULT 0,       -- 0 = No, 1 = Yes
+//     refundable TINYINT(1) DEFAULT 0,       -- 0 = No, 1 = Yes
+//     pickup_live_location VARCHAR(255),
+//     customer_name VARCHAR(100),
+//     gender VARCHAR(30),
+//     country_code VARCHAR(10),
+//     phone VARCHAR(20),
+//     email VARCHAR(150),
+//     billing_addr_as_pickup_addr TINYINT(1) DEFAULT 0, -- checkbox flag
+//     payment_option ENUM('fullPay','partialPay','cash') DEFAULT 'fullPay',
+//     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 // )";
 
 // $db->create_table($sql);

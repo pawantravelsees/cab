@@ -43,7 +43,7 @@ $values = str_replace(",", ";", json_encode($price));
                 to: <?= $maxPrice ?>,
                 onFinish: function(data) {
                     
-                    console.log('<?=$values?>');
+                    // console.log('<?=$values?>');
                     // execute_form();
                 }
             });
