@@ -1,5 +1,11 @@
 <script>
     $(document).ready(function() {
+        window.addEventListener("pageshow", function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+
         let yourItinerary = [];
         <?php if (isset($itinerary_list)) { ?>
             yourItinerary = JSON.parse('<?= $itinerary_list ?>');
@@ -117,9 +123,6 @@
             $('#oneWayTrip').prop('checked', true);
             toggleReturnSection()
         });
-
-
-
         const pickupInput = $('#pickupCity');
         const destinationInput = $('#goingTo');
         const suggestionBox = $('#pickupSuggestions');
@@ -166,7 +169,6 @@
                 destinationSuggestionBox.addClass('d-none');
                 return;
             }
-
             $.post('api.php', {
                 action: "suggestion",
                 query: query
@@ -177,8 +179,6 @@
                 }
                 data.forEach(city => {
                     destinationSuggestionBox.append(`<li data-id="${city.id}">${city.city_name}</li>`);
-
-
                 });
                 destinationSuggestionBox.removeClass('d-none');
             });
@@ -214,7 +214,10 @@
             }
         });
 
-        // $('#searchCar').on('submit', function (e) {
+        $('#search').on('submit', function(e) {
+            $('.hero_submit_button').prop('disabled', true).html(`<div class="spinner-border" role="status"></div>`);
+            // $('#loader').show(); // show loader overlay
+        });
         // e.preventDefault();
         //     console.log(yourItinerary); 
         // })
@@ -245,7 +248,6 @@
         //     } else {
         //         console.log("Not ok");
         //     }
-        // });
 
         addItineraryList()
 
@@ -398,10 +400,7 @@
                     }
 
                 })
-
             }
         });
-
-
     });
 </script>

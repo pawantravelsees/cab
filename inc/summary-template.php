@@ -15,8 +15,9 @@ $my_array = [
     'short_by' => $short_by
 ];
 $priceRange = $db->get_price_range($sid);
-$dbMin = (isset($priceRange['price_min']) ? $priceRange['price_min'] : "");
-$dbMax = (isset($priceRange['price_max']) ? $priceRange['price_max'] : "");
+$dbMin = (isset($priceRange['price_min']) && is_numeric($priceRange['price_min'])) ? $priceRange['price_min'] : '';
+$dbMax = (isset($priceRange['price_max']) && is_numeric($priceRange['price_max'])) ? $priceRange['price_max'] : '';
+
 $added_filt = "";
 foreach ($my_array as $k => $filter) {
     if (empty($filter)) continue;
@@ -137,10 +138,12 @@ foreach ($results['apiResponse'] as $item) {
         $originalPrice = ceil($item['price']);
         $discountPrice = 0;
 
-        if ($item['price'] > 30000) {
-            $discountPrice = floatval($item['price'] - 1500);
-        } else {
+        if ($item['price'] > 0 && $item['price'] < 1000) {
+            $discountPrice = floatval($item['price'] - 0);
+        } elseif ($item['price'] < 30000) {
             $discountPrice = floatval($item['price'] - 500);
+        } else {
+            $discountPrice = floatval($item['price'] - 1500);
         };
 
         // Calculate discount percentage
@@ -151,10 +154,11 @@ foreach ($results['apiResponse'] as $item) {
         ?>
         <div class="col-md-2 bg-light price_section d-flex flex-column align-items-end justify-content-center rounded">
             <div class="d-flex align-items-center justify-content-end gap-2">
-                <?php if ($discountPercent > 0): ?>
+                <?php if ($discountPercent > 0):
+                ?>
                     <span class="badge badge-success position-absolute shimmer" style="font-size: 14px !important; top: -10px; right: -10px;"><i class=" text-white"><?php echo $discountPercent; ?>% off</i></span>
-                    <strike>₹<?php echo number_format($originalPrice, 2); ?></strike>
                 <?php endif; ?>
+                <strike>₹<?php echo number_format($originalPrice, 2); ?></strike>
             </div>
             <h3 class="m-0 font-weight-bold">₹<?php echo number_format($discountPrice, 2); ?></h3>
             <a href="cab_details.php?cid=<?= $item['id'] ?>&sid=<?= $sid ?>" rel="noopener noreferrer" class="text-decoration-none text-white">

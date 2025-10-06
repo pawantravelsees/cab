@@ -122,7 +122,6 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] === "airport") {
     $db->update_scp($sid, 2);
     header("Location: results.php?sid=" . $sid);
 }
-
 if (isset($_REQUEST['action']) && $_REQUEST['action'] === "booking_initate") {
 
     $carrier = (isset($_REQUEST['carrier']) ? 1 : 0);
@@ -172,7 +171,6 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] === "booking_initate") {
     $bid = $db->booking_details_insert($booking_array);
     header("Location: payment.php?bid=" . $bid);
 }
-
 if (isset($_REQUEST['action']) && $_REQUEST['action'] === "make_booking") {
     $bid = $_REQUEST['bid'];
     $bookingDetails = $db->fetch_booking_details($bid);

@@ -62,18 +62,24 @@ $results = formate_search_request($request);
                     <?php
                     if ($results['trip_info']['trip_type'] == "o") { ?>
                         <span class="material-symbols-outlined text-white mr-1" style="font-variation-settings: 'FILL' 1; font-size: 20px;">location_on</span>
-                        <span class="mr-2 font-weight-bold"><?php echo $results['cities'][0]['address'] ?>,</span>
+                        <span class="mr-2 font-weight-bold"><?php echo $results['cities'][0]['address'] ?></span>
                         <!-- <span class="material-symbols-outlined mx-1" style="font-variation-settings: 'FILL' 1; font-size: 20px;">date_range</span> -->
-                        <span class="font-weight-bold mr-2"><?= date('D d, M h:i', strtotime($results['trip_info']['departure_date'])) ?> - </span>
-                        <span class="material-symbols-outlined text-white">
-                            departure_board
-                        </span>
+                        <span class="font-weight-bold mr-2"><?= date('D d, M h:i', strtotime($results['trip_info']['departure_date'])) ?> </span>
+                        <?php
+                        if ($results['trip_info']['is_return'] != 0 || sizeof($results['cities']) > 2) { 
+                            echo " - "
+                            ?> 
+                           <span class="material-symbols-outlined text-white ml-1">
+                                departure_board
+                            </span>
+                        <?php
+                        }
+                        ?>
                         <span class="font-weight-bold mr-3"><?php
                                                             if ($results['trip_info']['is_return'] != 0 || sizeof($results['cities']) > 2) {
                                                                 echo date('D d, M', strtotime($results['trip_info']['arrival_date']));
                                                             } else {
                                                             }
-
                                                             ?></span>
                         <span class="material-symbols-outlined text-white mr-1" style="font-variation-settings: 'FILL' 1; font-size: 20px;">directions_car</span>
                         <span class="mr-3"><?= $results['trip_info']['trip_way'] ?></span>
@@ -189,7 +195,6 @@ $results = formate_search_request($request);
                             <?= $btnText ?>
                         </a>
                     </div>
-
                 </div>
             </div>
         </div>

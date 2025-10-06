@@ -38,7 +38,8 @@ include "./inc/edit_modal.php";
                 </div>
                 <div class="col-md-12 d-flex justify-content-between">
                     <div class="mx-0 p-0">
-                        <span class="small resultCount"><?php //echo $resultsummary[0]['total_result'] ?></span>
+                        <span class="small resultCount"><?php //echo $resultsummary[0]['total_result'] 
+                                                        ?></span>
                     </div>
                     <div class="mb-3 col-md-2 mx-0 p-0">
 
@@ -187,6 +188,7 @@ require './inc/footer.php';
         }, intervalTime)
     })
     $(document).ready(function() {
+
         $(".modifyBtn").on("click", function(e) {
             e.preventDefault();
             let tripType = $(this).attr('data-tripType')
@@ -231,7 +233,6 @@ require './inc/footer.php';
             $("#cabBookingModal").modal("hide");
         });
     })
-
 
     $(document).ready(function() {
         let today = new Date();
@@ -308,8 +309,6 @@ require './inc/footer.php';
 
         })
     }
-
-  
 </script>
 
 <?php

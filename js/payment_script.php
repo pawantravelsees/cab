@@ -45,60 +45,58 @@
                 $('.finalPrice').text(`   ₹<?= number_format($grandTotal, 2) ?>`)
                 $('.offerAmount strong').text('₹<?= number_format($selectedCabResult['price'] - $discountPrice, 2) ?>')
                 breakdownHtml = `
-        <div class="fare-box p-2 rounded bg-custom_gray">
-            <div class="d-flex justify-content-between mb-1">
-                <span>Base Fare</span>
-                <span class="font-weight-bold">₹<?= number_format($basePrice, 2) ?></span>
-            </div>
-            <div class="d-flex justify-content-between mb-1">
-                <span>Carrier Charge</span>
-                <span class="font-weight-bold">₹${Number(545).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
-            </div>
-            <div class="d-flex justify-content-between mb-1">
-                <span>Car Model Charge</span>
-                <span class="font-weight-bold">₹${Number(958).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
-            </div>
-            <div class="d-flex justify-content-between mb-1">
-                <span>Pet Charge</span>
-                <span class="font-weight-bold">₹${Number(600).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
-            </div>
-            <hr>
-            <div class="d-flex justify-content-between fw-bold h6 mb-0">
-                <span class="font-weight-bold">Total</span>
-                <span class="font-weight-bold">₹<?= number_format($grandTotal, 2) ?></span>
-            </div>
-        </div>
-        `;
+                <div class="fare-box p-2 rounded bg-custom_gray">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Base Fare</span>
+                        <span class="font-weight-bold">₹<?= number_format($basePrice, 2) ?></span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Carrier Charge</span>
+                        <span class="font-weight-bold">₹${Number(545).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Car Model Charge</span>
+                        <span class="font-weight-bold">₹${Number(958).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Pet Charge</span>
+                        <span class="font-weight-bold">₹${Number(600).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold h6 mb-0">
+                        <span class="font-weight-bold">Total</span>
+                        <span class="font-weight-bold">₹<?= number_format($grandTotal, 2) ?></span>
+                    </div>
+                </div>
+            `;
             } else {
                 $('.finalPrice').text(`₹<?= number_format($discountPriceWithGST, 2) ?>`)
                 $('.offerAmount strong').text('₹<?= number_format($selectedCabResult['price'] - $discountPrice, 2) ?>')
                 breakdownHtml = `
-        <div class="fare-box p-2 rounded bg-custom_gray">
-            <div class="d-flex justify-content-between mb-1">
-                <span>Base Fare</span>
-                <span class="font-weight-bold">₹<?= number_format($basePrice, 2) ?></span>
-            </div>
-            <div class="d-flex justify-content-between mb-1">
-                <span>Driver Charges</span>
-                <span class="font-weight-bold">₹570.00</span>
-            </div>
-            <div class="d-flex justify-content-between mb-1">
-                <span>Taxes & Fees</span>
-                <span class="font-weight-bold">₹814.00</span>
-            </div>
-            <hr>
-                <div class="d-flex justify-content-between fw-bold h6 mb-0">
-                <span class="font-weight-bold">Total</span>
-                <span class="font-weight-bold">₹<?= number_format($selectedCabResult['price'] , 2) ?></span>
-            </div>
-        </div>
-        `;
+                <div class="fare-box p-2 rounded bg-custom_gray">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Base Fare</span>
+                        <span class="font-weight-bold">₹<?= number_format($basePrice, 2) ?></span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Driver Charges</span>
+                        <span class="font-weight-bold">₹570.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Taxes & Fees</span>
+                        <span class="font-weight-bold">₹814.00</span>
+                    </div>
+                    <hr>
+                        <div class="d-flex justify-content-between fw-bold h6 mb-0">
+                        <span class="font-weight-bold">Total</span>
+                        <span class="font-weight-bold">₹<?= number_format($selectedCabResult['price'] , 2) ?></span>
+                    </div>
+                </div>
+            `;
             }
-
             $("#fareBreakup").html(breakdownHtml);
         }
         mainFunction();
-
         let initialOption = getPaymentOptionValue();
         toggleAddons(initialOption);
     });

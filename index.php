@@ -1,12 +1,9 @@
+
 <?php
 $pageTitle = "Tripodeal Cabs - Home Page";
 require './inc/head.php';
 require './inc/header.php';
 ?>
-<!-- loader -->
-<!-- Page Loader -->
-
-<!-- loader -->
 <!-- Page content start -->
 <!-- hero section start-->
 <div class="container hero_section p-0 ">
@@ -57,12 +54,10 @@ require './inc/header.php';
 </div>
 <!-- hero section end -->
 <!-- Page content End -->
+
 <?php
 require './inc/footer.php';
 ?>
-<script>
-
-</script>
 <script>
     $(document).ready(function() {
         let today = new Date();

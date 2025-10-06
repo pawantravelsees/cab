@@ -2,22 +2,22 @@
        <div class="row align-items-center flex-md-nowrap justify-content-between">
            <div class="col-md-6 px-1">
                <p class=" text-center  py-2 rounded cursor-pointer  hover-yellow-box mb-2 bookingType border-dark-satel border active <?php if (isset($results['trip_info']['trip_type']) && $results['trip_info']['trip_type'] == "o") {
-                                                                                                                                                    echo "active";
-                                                                                                                                                }
-                                                                                                                                                ?> outstation">Outstation</p>
+                                                                                                                                            echo "active";
+                                                                                                                                        }
+                                                                                                                                        ?> outstation">Outstation</p>
            </div>
            <div class="col-md-6 px-1">
                <p class=" text-center py-2 rounded cursor-pointer hover-yellow-box mb-2 bookingType border-dark-satel border <?php if (isset($results['trip_info']['trip_type']) && $results['trip_info']['trip_type'] == "a" || $results['trip_info']['trip_type'] == "l") {
-                                                                                                                                            echo "active";
-                                                                                                                                        }
-                                                                                                                                        ?> localTripType"> Local / Airport</p>
+                                                                                                                                    echo "active";
+                                                                                                                                }
+                                                                                                                                ?> localTripType"> Local / Airport</p>
            </div>
        </div>
    </div>
 
    <!-- outestanding form -->
    <div class="col-md-12">
-       <form class="" action="search.php" method="post">
+       <form class="" action="search.php" method="post" id="search">
            <?php
             // echo "<pre>";
             // print_r($results);
@@ -222,7 +222,7 @@
                        <div class="col-md-12 px-1">
                            <div class="form-group position-relative d-flex align-items-center justify-content-start gap-2 text-start rounded font-weight-normal cursor-pointer border-dark-satel border bg-white px-2 mb-0 localCity">
                                <select name="airportRoute" id="selectRoute" class="form-control bg-white border-0 shadow-none outline-none">
-                                   <option value="" disabled <?= !isset($request['details'][0]['fareType']) ? 'selected' : '' ?>>From Airport / To Airport</option>
+                                   <option value="" disabled selected>From Airport / To Airport</option>
                                    <option value="to-airport" <?= (isset($request['details'][0]['fareType']) && $request['details'][0]['fareType'] == 'to-airport') ? 'selected' : '' ?>>To Airport</option>
                                    <option value="from-airport" <?= (isset($request['details'][0]['fareType']) && $request['details'][0]['fareType'] == 'from-airport') ? 'selected' : '' ?>>From Airport</option>
                                </select>
@@ -281,7 +281,7 @@
            <div class="row mb-2">
                <div class="col-md-12 px-1">
 
-                   <button class=" hero_submit_button">Check Price & Book Cab</button>
+                   <button class="hero_submit_button">Check Price & Book Cab</button>
                </div>
            </div>
 

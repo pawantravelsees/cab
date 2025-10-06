@@ -30,7 +30,6 @@ if (isset($request['details']) && $request['details'][0]['trip_type'] == "o") {
 }
 
 $grandTotal = "";
-// Calculate discounted price
 $basePrice = ceil($selectedCabResult['price']);
 $basegst = ceil($selectedCabResult['gst']);
 $carrierChages = ceil($selectedCabResult['carrier_charge']);
@@ -68,11 +67,11 @@ include "./inc/edit_modal.php";
             <div class="ticket-container ">
                 <div class="ticket-header">
                     <div>
-                        <h2>Sasta Safar</h2>
+                        <h2>Tripodeal</h2>
                         <small>Booking Date & Time: <?= date('d M Y H:i', strtotime($bookings['created_at'])) ?></small>
                     </div>
                     <div class="text-right">
-                        <p>SastaSafar Booking ID: <strong>
+                        <p class="ticketStatus">SastaSafar Booking ID: <strong>
                                 <?php
                                 $prefix = "SSFC";
                                 $id = $bookings['booking_id'];

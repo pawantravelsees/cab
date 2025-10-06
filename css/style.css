@@ -893,7 +893,7 @@ select {
 .point_items:nth-child(1) {
     width: 15px;
     height: 15px;
-    border: 2px solid green;
+    border: 2px solid rgb(74, 180, 106);
     border-radius: 50%;
     /* background-color: #007BFF; */
 }
@@ -901,7 +901,7 @@ select {
 .point_items {
     width: 15px;
     height: 15px;
-    border: 2px solid blue;
+    border: 2px solid #2290FF;
     border-radius: 50%;
     /* background-color: #007BFF; */
 }
@@ -910,12 +910,13 @@ select {
 .point_connectLine {
     width: 2px;
     height: 24px;
-    background: blue;
+    background: #2290FF;
 }
+
 .point_connectLine:nth-child(1) {
     width: 2px;
     height: 24px;
-    background: linear-gradient(to bottom, green, blue);
+    background: linear-gradient(to bottom, green, #2290FF);
 }
 
 .point_connectLine:last-child {
@@ -926,7 +927,8 @@ select {
     height: 21px;
     width: auto;
 }
-.gap_section:last-child{
+
+.gap_section:last-child {
     display: none;
 }
 
@@ -934,4 +936,27 @@ select {
     white-space: normal;
     margin-top: -3px;
     /* collapse extra spaces */
+}
+
+.spinner-border {
+    width: 20px;
+    height: 20px;
+    --bs-spinner-width: 1rem !important;
+    --bs-spinner-height: 1rem !important;
+    --bs-spinner-vertical-align: -0.125em;
+    --bs-spinner-border-width: 0.25em;
+    --bs-spinner-animation-speed: 0.75s;
+    --bs-spinner-animation-name: spinner-border;
+    border: 2px solid rgb(255, 255, 255);
+    border-right-color: transparent;
+}
+
+.proceedBtn {
+    line-height: normal;
+}
+
+@media print {
+    .ticketStatus {
+        font-size: 42px;
+    }
 }

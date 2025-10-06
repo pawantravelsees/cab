@@ -170,7 +170,7 @@ include "./inc/edit_modal.php";
                                                         }
                                                         ?>
                                                     </h5>
-                                                    <small class="text-muted"><?= $request['details'][0]['pickup'] ?></small>
+                                                    <small class="text-muted"><?= $request['details'][0]['destination'] ?></small>
                                                 </div>
                                             <?php } else if ($request['details'][0]['trip_type'] == 'l') {
 
@@ -212,7 +212,8 @@ include "./inc/edit_modal.php";
                                                     </p>
                                                 </div>
                                                 <!-- <p class="m-0 p-0 mr-2">
-                                                <span class="font-weight-bold mx-2"><?= date('D d, M h:i', strtotime($request['details'][0]['departureAt'])) ?> </span>
+                                                <span class="font-weight-bold mx-2"><? //= date('D d, M h:i', strtotime($request['details'][0]['departureAt'])) 
+                                                                                    ?> </span>
                                             </p> -->
 
                                             <?php } ?>
@@ -480,7 +481,6 @@ include "./inc/edit_modal.php";
                             </label>
                         </div>
 
-
                         <div class="list-group list-group-flush mb-0">
                             <!-- Full Pay (Premium Service) -->
                             <label class="list-group-item d-flex justify-content-between align-items-start mb-2 border-bottom px-0 py-1">
@@ -517,12 +517,10 @@ include "./inc/edit_modal.php";
                                 </span>
                             </label>
                         </div>
-
-
                     </div>
 
                     <!-- Pay Button -->
-                    <button class="btn w-100 text-white fw-bold" style="background: linear-gradient(to right, #1e90ff, #3a8dff); font-size: 1rem;">
+                    <button class="btn w-100 text-white fw-bold proceedBtn" style="background: linear-gradient(to right, #1e90ff, #3a8dff); font-size: 1rem;">
                         Proceed to Payment
                     </button>
 
@@ -560,13 +558,9 @@ include "./inc/edit_modal.php";
                             </div>
                         </div>
                     </div>
-
-
                 </div>
-
             </div>
         </div>
-
     </form>
 </div>
 <?php
@@ -586,17 +580,39 @@ require './inc/footer.php';
             let isValid = true;
             $(this).find('.invalid-feedback').remove();
             $(this).find('.is-invalid').removeClass('is-invalid border-danger');
+            $('.proceedBtn').prop('disabled', true).html(`<div class="spinner-border" role="status"></div>`);
             $(this).find('input[required], select[required], textarea[required]').each(function() {
-                if ($(this).val().trim() === '') {
+                let value = $(this).val();
+                if (!value || value.trim() === '') {
                     isValid = false;
                     $(this).addClass('is-invalid border-danger');
-                    $(this).after('<div class="invalid-feedback d-block">This field is required.</div>');
+                    if ($(this).closest('.input-group, .form-floating').length > 0) {
+                        $(this).closest('.input-group, .form-floating').after('<div class="invalid-feedback d-block">This field is required.</div>');
+                    } else {
+                        $(this).after('<div class="invalid-feedback d-block">This field is required.</div>');
+                    }
                 }
             });
+            let mobileInput = $(this).find('input[name="phone"]');
+            let mobile = mobileInput.val() ? mobileInput.val().trim() : '';
+            let mobileRegex = /^[6-9]\d{9}$/;
+
+            if (mobile.length != 10 || !mobileRegex.test(mobile)) {
+                isValid = false;
+                mobileInput.addClass('is-invalid border-danger');
+
+                if (mobileInput.closest('.input-group, .form-floating').length > 0) {
+                    mobileInput.closest('.input-group, .form-floating').after('<div class="invalid-feedback d-block">Please enter a valid 10-digit mobile number.</div>');
+                } else {
+                    mobileInput.after('<div class="invalid-feedback d-block">Please enter a valid 10-digit mobile number.</div>');
+                }
+            }
             if (!isValid) {
                 e.preventDefault();
+                $('.proceedBtn').prop('disabled', false).html('Proceed');
             }
         });
+
 
 
     })

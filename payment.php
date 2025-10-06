@@ -59,12 +59,12 @@ include "./inc/edit_modal.php";
 <div class="bg-custom_gray pt-2 min-vh-100">
     <div class="container">
         <?php
-        echo "<pre>";
+        // echo "<pre>";
         // print_r($selectedCabResult);
         // // print_r($selectedCab);
         // print_r($bookingDetails);
         // print_r($request);
-        echo "</pre>";
+        // echo "</pre>";
         ?>
         <div class="row">
             <div class="col-md-8 p-0 rounded mt-2 mb-4">
@@ -341,7 +341,6 @@ include "./inc/edit_modal.php";
                                             readonly>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -458,7 +457,6 @@ include "./inc/edit_modal.php";
                             </div>
                         </div>
                     </div>
-
                     <!-- Final Price -->
                     <?php
                     $grandTotal = $basePrice + $addonTotal + $gstTotal;
@@ -467,7 +465,11 @@ include "./inc/edit_modal.php";
                         <div class="d-flex justify-content-between">
                             <div>
                                 <span class="font-weight-bold h6">Final Price</span>
-                                <div class="small text-muted">All services included</div>
+                                <div class="small text-muted servicesInc"> <?php
+                                                                            echo ($bookingDetails['payment_option'] == "fullPay")
+                                                                                ? "All services included"
+                                                                                : "No other services selected";
+                                                                            ?></div>
                             </div>
                             <div class="text-right">
                                 <span class="d-block mb-0 font-weight-bold h6">
@@ -535,14 +537,15 @@ require './inc/footer.php';
                 action: "make_booking",
                 bid: <?= $bid ?>
             }, function(data) {
-                console.log(data);
+                // console.log(data);
+                $('.payNowBtn').prop('disabled', true).html(`<div class="spinner-border" role="status"></div>`);
+
                 window.location.href = "ticket.php?bid=<?= $bid ?>";
             });
         });
         $('.cancelBtn').on('click', function() {
             $('#confirmModal').modal('hide');
         });
-
     })
 </script>
 

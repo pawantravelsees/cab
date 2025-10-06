@@ -6,6 +6,7 @@ else if ($pagename == "search.php") $title = "SEARCH";
 else if ($pagename == "results.php") $title = "RESULTS";
 else if ($pagename == "cab_details.php") $title = "Cab Details";
 else if($pagename=="payment.php") $title = "Payment tripodeal";
+else if($pagename=="ticket.php") $title = "Ticket";
 else $title = "";
 ?>
 <!DOCTYPE html>
